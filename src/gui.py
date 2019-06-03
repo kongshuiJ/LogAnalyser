@@ -14,8 +14,9 @@ from logparser import *
 
 RE_LISTS = []
 
-# checkButtonDict存放每个主题的选中状态 选中 True  未选中 False
-checkButtonDict = {}
+# systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
+# 如 [D] [I] [E] [M]
+systemLevelLogDict = {}
 
 class Win:
     def __init__(self):
@@ -97,56 +98,61 @@ class Win:
         self.setupStatus()
 
 
-
     def var_states(self,):
         print("male: %d,\nfemale: %d" % (11,33))
 
 
     def add_checkbox(self, name, callback):
-        global checkButtonDict
-        checkButtonDict[name] = False
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10)
         win_checkbox.add(cb_items, sticky="w")
 
 
     def add_checkbox1(self, name, callback):
-        global checkButtonDict
-        checkButtonDict[name] = False
+        global systemLevelLogDict
+        systemLevelLogDict[name] = False
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10, height = 1)
         win_checkbox.add(cb_items, sticky="w")
 
 
-    def systemLog(self, name):
-        global checkButtonDict
+    def refreshTextInfo(self,):
+        global systemLevelLogDict
 
-        if not checkButtonDict[name]:
-            for index in self.logLevelList:
-                if name == "[" + index.lvl + "]":
-                    self.logScrolledText.insert(INSERT, index)
+        self.logScrolledText.delete('1.0','end')
+
+        for listContent in self.logLevelList:
+            for level in systemLevelLogDict:
+                if level == listContent.lvl and True == systemLevelLogDict[level]:
+                    self.logScrolledText.insert(INSERT, str(listContent.time))
+                    self.logScrolledText.insert(INSERT, "   ")
+                    self.logScrolledText.insert(INSERT, listContent.log)
                     self.logScrolledText.insert(INSERT, "\n")
 
-        else:
-            self.logScrolledText.delete(1.0, END)
+            if True == listContent.filteredInfoDisplayFlag:
+                self.logScrolledText.insert(INSERT, str(listContent.time))
+                self.logScrolledText.insert(INSERT, "   ")
+                self.logScrolledText.insert(INSERT, listContent.filteredInfo)
+                self.logScrolledText.insert(INSERT, "\n")
+        
 
-        checkButtonDict[name] = ~checkButtonDict[name]
+    def systemLog(self, name):
+        global systemLevelLogDict
+
+        systemLevelLogDict[name] = bool(1 - systemLevelLogDict[name])
+        print("name:" , name)
+        print(systemLevelLogDict[name])
+        self.refreshTextInfo()
 
 
-    def USR_CTR_log(self, name, filterWord):
-        global checkButtonDict
+    def USR_CTR_log(self, name):
         if 0 == len(self.itemsList):
-            self.itemsList = filterll(self.logLists, RE_LISTS)
+            self.itemsList = filterll(self.logLevelList, RE_LISTS)
 
-        if not checkButtonDict[name]:
-            for listContent in self.itemsList:
-                for l in RE_LISTS[name]:
-                    if 0 <= listContent.find(l[1]):
-                        self.logScrolledText.insert(INSERT, listContent + "\n")
+        for listContent in self.logLevelList:
+            for l in RE_LISTS[name]:
+                if 0 <= listContent.filteredInfo.find(l[1]):
+                    listContent.filteredInfoDisplayFlag = bool(1 - listContent.filteredInfoDisplayFlag)
 
-        else:
-            # 如果选项框取消选中，则清空Text
-            self.logScrolledText.delete(1.0, END)
-
-        checkButtonDict[name] = ~checkButtonDict[name]
+        self.refreshTextInfo()
 
 
     def setupCheckButton(self,):
@@ -159,8 +165,8 @@ class Win:
 
         #for itemName in RE_LISTS:
         #    self.add_checkbox(itemName, lambda:self.USR_CTR_log(itemName, 0))
-        self.add_checkbox("RE_UC", lambda:self.USR_CTR_log("RE_UC", 0))
-        self.add_checkbox("RE_UD", lambda:self.USR_CTR_log("RE_UD", 0))
+        self.add_checkbox("RE_UC", lambda:self.USR_CTR_log("RE_UC"))
+        self.add_checkbox("RE_UD", lambda:self.USR_CTR_log("RE_UD"))
 
 
     def clean_checkbox(self):

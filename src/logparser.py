@@ -76,16 +76,15 @@ def filterll(listraw, RELists):
     outList = []
     for l in listraw:
         needprint = False
-        lout = ""
         for catogory in RELists:
             for pat in RELists[catogory]:
-                mg = re.match(eval(pat[0]), l)
+                mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
-                    lout = pat[1] + "%s" % mg.groups()
+                    l.filteredInfo = pat[1] + "%s" % mg.groups()
 
         if needprint:
-            outList.append(lout)
+            outList.append(l.filteredInfo)
 
     return outList
 
@@ -98,6 +97,8 @@ class LogItem:
         self.file = ""
         self.line = int(0)
         self.log = ""
+        self.filteredInfo = ""
+        self.filteredInfoDisplayFlag = False
 
     def __str__(self):
         return '%s %s %f %s %d ::::: %s' % ( self.lvl, self.category, self.time, self.file, self.line, self.log )
@@ -110,7 +111,7 @@ class LogItem:
             return None
         else:
             s = LogItem()
-            s.lvl = gp.group(1)
+            s.lvl = "[" + gp.group(1) + "]"
             s.category = gp.group(2)
             s.time = float(gp.group(3))
             s.file = gp.group(4)
@@ -144,7 +145,7 @@ if __name__ == '__main__':
     parseItemFile("test.json")
     line, size, lists = loadLogFile(filePath)
     itlist = filter_category(lists)
-    aa = filterll(lists, RE_LISTS)
+    aa = filterll(itlist, RE_LISTS)
     print(aa)
 
 
