@@ -1,4 +1,3 @@
-#!/usr/bin/python3
 import os
 import sys
 sys.path.append("..")
@@ -9,6 +8,8 @@ import base64
 import binascii
 import re
 
+import json
+
 LOG_LEVEL = [
     ('[D]',                  '[D]'),
     ('[I]',                  '[I]'),
@@ -18,15 +19,19 @@ LOG_LEVEL = [
 
 LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{2,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
 
-
 RE_UC = [
-    (r'.*USR_CTR_(\S*).*', '用户信号: %s', 'User Signal: %s '),
+    (r'.*USR_CTR_(\S*).*', '用户信号: ', 'User Signal: '),
+    (r'.*AUDIO_(\S*).*', '语言播放: ', 'Voice playback: '),
     ]
 
-RE_LISTS = [RE_UC, ]
+RE_UD = [
+        (r'.*ERROR_(\S*).*', '错误信息: ', 'Error info: ')
+        ]
+
+RE_LISTS = []
 
 
-def printBuffromB64(str ):
+def printBuffromB64(str):
     try:
         buf = str.encode(encoding="utf-8")
         raw = base64.b64decode(str)
@@ -67,29 +72,28 @@ def loadLogFile(filename):
     return linecnt, filesize, loglist
 
 
-def filter(listraw, RELists):
+def filterll(listraw, RELists):
     outList = []
     for l in listraw:
         needprint = False
         lout = ""
         for catogory in RELists:
-            for pat in catogory:
-                mg = re.match(pat[0], l)
+            for pat in RELists[catogory]:
+                mg = re.match(eval(pat[0]), l)
                 if mg:
-                    print(lout)
                     needprint = True
-                    lout = pat[1] % mg.groups()
+                    lout = pat[1] + "%s" % mg.groups()
 
         if needprint:
             outList.append(lout)
-            print(lout)
+
     return outList
 
 
 class LogItem:
     def __init__(self):
-        self.lvl = ""
-        self.category = ""
+        self.lvl = ""           # log级别
+        self.category = ""      # log类别
         self.time = float(0)
         self.file = ""
         self.line = int(0)
@@ -115,24 +119,38 @@ class LogItem:
             return s
 
 
-def filter_category(listraw,itemlist):
+def filter_category(listraw):
     itemlist = []
     for l in listraw:
         ll = LogItem.generate(l)
         if (ll):
             itemlist.append(ll)
 
+    return itemlist
+
+
+def parseItemFile(filePath):
+    global RE_LISTS
+
+    fileHandle = open(filePath, encoding = "utf-8")
+    readFile = fileHandle.read()
+    RE_LISTS = json.loads(readFile)
+
+    return RE_LISTS
 
 
 if __name__ == '__main__':
-    filepath="/Users/bacon/Documents/test.log"
-    line, size, lists = loadLogFile(filepath)
-    itlist = []
-    filter_category(lists, itlist)
+    filePath="test.log"
+    parseItemFile("test.json")
+    line, size, lists = loadLogFile(filePath)
+    itlist = filter_category(lists)
+    aa = filterll(lists, RE_LISTS)
+    print(aa)
 
-#   filter(lists, RE_LISTS)
-#   print(line,size,len(lists))
-#   printBuffromB64("SAE=")
+
+    
+    #print(line,size,len(lists))
+    #printBuffromB64("MQ==")
 
 
 
