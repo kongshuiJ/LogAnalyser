@@ -26,7 +26,8 @@ class Win:
         self.logList = []
         self.userLevelLogList = []
         self.b64str = StringVar()
-        self.logScrolledText = None
+        self.logListbox = None
+        self.logScrollbar = None
         self.setupWindow()
 
 
@@ -58,11 +59,12 @@ class Win:
         win_checkbox.pack(fill=X)
 
 
-    def setupLogText(self):
-        self.logScrolledText = scrolledtext.ScrolledText(self.win, width = 500, height = 35)
-        self.logScrolledText.pack()
-        sl = Scrollbar(self.win)
-        sl.pack(side = RIGHT,fill = Y)
+    def setupScrollbar(self):
+
+        self.logScrollbar = Scrollbar(self.win)
+        self.logScrollbar.pack(side = RIGHT, fill = Y)
+        self.logListbox = Listbox(self.win, width = 500, height = 35, yscrollcommand = self.logScrollbar.set)
+        self.logScrollbar.config(command = self.logListbox.yview)
 
 
     def setupStatus(self):
@@ -91,7 +93,7 @@ class Win:
         # setup workspace
         ## setup checkbox
         self.setupCheckboxes()
-        self.setupLogText()
+        self.setupScrollbar()
         self.setupCheckButton()
         self.setupB64Entry()
         self.setupStatus()
@@ -116,21 +118,17 @@ class Win:
     def refreshTextInfo(self,):
         global systemLevelLogDict
 
-        self.logScrolledText.delete('1.0','end')
+        self.logListbox.delete(0, END)
 
         for listContent in self.logList:
             for level in systemLevelLogDict:
                 if level == listContent.lvl and True == systemLevelLogDict[level]:
-                    self.logScrolledText.insert(INSERT, str(listContent.time))
-                    self.logScrolledText.insert(INSERT, "       ")
-                    self.logScrolledText.insert(INSERT, listContent.log)
-                    self.logScrolledText.insert(INSERT, "\n")
+                    self.logListbox.insert(END, str(listContent.time) + "       " + listContent.log + "\n")
+                    self.logListbox.pack(side = LEFT, fill = BOTH)
 
             if True == listContent.filteredInfoDisplayFlag:
-                self.logScrolledText.insert(INSERT, str(listContent.time))
-                self.logScrolledText.insert(INSERT, "       ")
-                self.logScrolledText.insert(INSERT, listContent.filteredInfo)
-                self.logScrolledText.insert(INSERT, "\n")
+                self.logListbox.insert(END, str(listContent.time) + "       " + listContent.filteredInfo + "\n")
+                self.logListbox.pack(side = LEFT, fill = BOTH)
         
 
     def systemLevelLog(self, name):
