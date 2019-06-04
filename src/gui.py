@@ -74,6 +74,7 @@ class Win:
         self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20 )
         self.stlable.pack(side=BOTTOM, fill=X)
 
+
     def setupB64Entry(self):
         ## setup entry
         self.b64str.trace("w", lambda name, index, mode, sv=self.b64str:self.onB64StrChange(sv))
@@ -110,9 +111,10 @@ class Win:
 
     def systemLevelCheckbox(self, name, callback):
         global systemLevelLogDict
-        systemLevelLogDict[name] = False
-        cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10, height = 1)
+        systemLevelLogDict[name] = True
+        cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width = 10, height = 1)
         win_checkbox.add(cb_items, sticky="w")
+        cb_items.select()
 
 
     def refreshTextInfo(self,):
@@ -185,6 +187,7 @@ class Win:
             # 确定打开文件后,对log文件进行解析
             fileLine, fileSize, logList = loadLogFile(filePath)
             self.logList = filter_category(logList)
+            self.refreshTextInfo()
 
         else:
             print("file not exist!", filePath)
