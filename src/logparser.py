@@ -10,7 +10,8 @@ import re
 
 import json
 
-LOG_LEVEL = [
+# 系统级log
+SYSTEM_LOG_LEVEL = [
     ('[D]',                  '[D]'),
     ('[I]',                  '[I]'),
     ("[\033[1;31mE\033[0m]", '[E]'),
@@ -18,15 +19,6 @@ LOG_LEVEL = [
 ]
 
 LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{2,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
-
-RE_UC = [
-    (r'.*USR_CTR_(\S*).*', '用户信号: ', 'User Signal: '),
-    (r'.*AUDIO_(\S*).*', '语言播放: ', 'Voice playback: '),
-    ]
-
-RE_UD = [
-        (r'.*ERROR_(\S*).*', '错误信息: ', 'Error info: ')
-        ]
 
 RE_LISTS = []
 
@@ -55,7 +47,7 @@ def loadLogFile(filename):
         for line in f:
             tmpline = line.replace('\n', '')
             isLvl = False
-            for re in LOG_LEVEL:
+            for re in SYSTEM_LOG_LEVEL:
                 if tmpline.find(re[0]) >= 0:
                     tmpline = tmpline.replace(re[0], re[1])
                     isLvl = True

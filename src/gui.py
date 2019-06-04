@@ -12,8 +12,6 @@ import tkinter.messagebox
 
 from logparser import *
 
-RE_LISTS = []
-
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
 systemLevelLogDict = {}
@@ -21,20 +19,21 @@ systemLevelLogDict = {}
 class Win:
     def __init__(self):
         self.win = tk.Tk()
-        self.stlable = tk.scrolledtext.ScrolledText(self.win, bg="grey", width=98, height=20 )
+        self.stlable = None
         self.win_checkbox = None
         self.list_checkboxes = None
-        self.filePath=""
-        self.logLists = []
-        self.itemsList = []
-        self.logLevelList = []
+        self.filePath = ""
+        self.logList = []
+        self.userLevelLogList = []
         self.b64str = StringVar()
         self.logScrolledText = None
         self.setupWindow()
 
+
     def loop(self):
         self.win.mainloop()
         self.stlable.setvar()
+
 
     def onB64StrChange(self, str):
         st = str.get()
@@ -70,8 +69,8 @@ class Win:
         ## setup status
         lf_status = LabelFrame(self.win, text="Test", width=900, height=10)
         lf_status.pack(side=BOTTOM, fill=X)
-        stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width=98, height=20 )
-        stlable.pack(side=BOTTOM, fill=X)
+        self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20 )
+        self.stlable.pack(side=BOTTOM, fill=X)
 
     def setupB64Entry(self):
         ## setup entry
@@ -102,12 +101,12 @@ class Win:
         print("male: %d,\nfemale: %d" % (11,33))
 
 
-    def add_checkbox(self, name, callback):
+    def addUserLevelCheckbox(self, name, callback):
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10)
         win_checkbox.add(cb_items, sticky="w")
 
 
-    def add_checkbox1(self, name, callback):
+    def systemLevelCheckbox(self, name, callback):
         global systemLevelLogDict
         systemLevelLogDict[name] = False
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10, height = 1)
@@ -119,35 +118,33 @@ class Win:
 
         self.logScrolledText.delete('1.0','end')
 
-        for listContent in self.logLevelList:
+        for listContent in self.logList:
             for level in systemLevelLogDict:
                 if level == listContent.lvl and True == systemLevelLogDict[level]:
                     self.logScrolledText.insert(INSERT, str(listContent.time))
-                    self.logScrolledText.insert(INSERT, "   ")
+                    self.logScrolledText.insert(INSERT, "       ")
                     self.logScrolledText.insert(INSERT, listContent.log)
                     self.logScrolledText.insert(INSERT, "\n")
 
             if True == listContent.filteredInfoDisplayFlag:
                 self.logScrolledText.insert(INSERT, str(listContent.time))
-                self.logScrolledText.insert(INSERT, "   ")
+                self.logScrolledText.insert(INSERT, "       ")
                 self.logScrolledText.insert(INSERT, listContent.filteredInfo)
                 self.logScrolledText.insert(INSERT, "\n")
         
 
-    def systemLog(self, name):
+    def systemLevelLog(self, name):
         global systemLevelLogDict
 
         systemLevelLogDict[name] = bool(1 - systemLevelLogDict[name])
-        print("name:" , name)
-        print(systemLevelLogDict[name])
         self.refreshTextInfo()
 
 
-    def USR_CTR_log(self, name):
-        if 0 == len(self.itemsList):
-            self.itemsList = filterll(self.logLevelList, RE_LISTS)
+    def userLevelLog(self, name):
+        if 0 == len(self.userLevelLogList):
+            self.userLevelLogList = filterll(self.logList, RE_LISTS)
 
-        for listContent in self.logLevelList:
+        for listContent in self.logList:
             for l in RE_LISTS[name]:
                 if 0 <= listContent.filteredInfo.find(l[1]):
                     listContent.filteredInfoDisplayFlag = bool(1 - listContent.filteredInfoDisplayFlag)
@@ -157,16 +154,20 @@ class Win:
 
     def setupCheckButton(self,):
         global RE_LISTS
+        global SYSTEM_LOG_LEVEL 
 
-        self.add_checkbox1(LOG_LEVEL[0][1], lambda:self.systemLog(LOG_LEVEL[0][1]))
-        self.add_checkbox1(LOG_LEVEL[1][1], lambda:self.systemLog(LOG_LEVEL[1][1]))
-        self.add_checkbox1(LOG_LEVEL[2][1], lambda:self.systemLog(LOG_LEVEL[2][1]))
-        self.add_checkbox1(LOG_LEVEL[3][1], lambda:self.systemLog(LOG_LEVEL[3][1]))
+#       for logLevel in SYSTEM_LOG_LEVEL:
+#           self.systemLevelCheckbox(logLevel[1], lambda:self.systemLevelLog(logLevel[1]))
+            
+        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[0][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[0][1]))
+        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[1][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[1][1]))
+        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[2][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[2][1]))
+        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[3][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[3][1]))
 
         #for itemName in RE_LISTS:
-        #    self.add_checkbox(itemName, lambda:self.USR_CTR_log(itemName, 0))
-        self.add_checkbox("RE_UC", lambda:self.USR_CTR_log("RE_UC"))
-        self.add_checkbox("RE_UD", lambda:self.USR_CTR_log("RE_UD"))
+        #    self.addUserLevelCheckbox(itemName, lambda:self.userLevelLog(itemName, 0))
+        self.addUserLevelCheckbox("RE_UC", lambda:self.userLevelLog("RE_UC"))
+        self.addUserLevelCheckbox("RE_UD", lambda:self.userLevelLog("RE_UD"))
 
 
     def clean_checkbox(self):
@@ -184,8 +185,8 @@ class Win:
             print("open file", filePath)
 
             # 确定打开文件后,对log文件进行解析
-            fileLine, fileSize, self.logLists = loadLogFile(filePath)
-            self.logLevelList = filter_category(self.logLists)
+            fileLine, fileSize, logList = loadLogFile(filePath)
+            self.logList = filter_category(logList)
 
         else:
             print("file not exist!", filePath)
