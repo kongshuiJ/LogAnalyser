@@ -21,6 +21,8 @@ class Win:
         self.win = tk.Tk()
         self.stlable = None
         self.win_checkbox = None
+        self.systemLevelLogWin_checkbox = None
+        self.userLevelLogWin_checkbox = None
         self.list_checkboxes = None
         self.filePath = ""
         self.logList = []
@@ -44,23 +46,35 @@ class Win:
 
     def setupMenu(self):
         menuBar = Menu(self.win)
-        self.win.config(menu=menuBar)
+        self.win.config(menu = menuBar)
         fileMenu = Menu(menuBar)
-        menuBar.add_cascade(label="File", menu=fileMenu)
-        fileMenu.add_command(label="load file...", command=self._parseFile)
-        fileMenu.add_command(label="exit", command=self._quit)
+        menuBar.add_cascade(label = "File", menu = fileMenu, font = ('Arial', 13, 'bold'))
+        fileMenu.add_command(label = "load log file...", command = self._parseFile, font = ('Arial', 10, 'bold'))
+        fileMenu.add_command(label = "exit", command = self._quit, font = ('Arial', 10, 'bold'))
 
 
     def setupCheckboxes(self):
-        lf_encheck= LabelFrame(self.win, text="Items", width=900, height=10)
-        lf_encheck.pack(side=TOP, fill=X)
-        global win_checkbox
-        win_checkbox = PanedWindow(lf_encheck, width=900)
-        win_checkbox.pack(fill=X)
+        lf_encheck= LabelFrame(self.win, text = "Items", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_encheck.pack(side=TOP, fill = X)
+
+#       self.win_checkbox = PanedWindow(lf_encheck, width = 900, orient = VERTICAL)
+        self.win_checkbox = PanedWindow(lf_encheck, orient = VERTICAL)
+        self.win_checkbox.pack(fill = X)
+
+        # 系统级log
+        self.systemLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
+        self.win_checkbox.add(self.systemLevelLogWin_checkbox)
+        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox, text = "system level item: ", font = ('Arial', 10, 'bold'))
+        self.systemLevelLogWin_checkbox.add(systemLevelLogLabel)
+
+        # 用户级log
+        self.userLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
+        self.win_checkbox.add(self.userLevelLogWin_checkbox)
+        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox, text = "  user level item  : ", font =('Arial', 10, 'bold'))
+        self.userLevelLogWin_checkbox.add(userLevelLogLabel)
 
 
     def setupScrollbar(self):
-
         self.logScrollbar = Scrollbar(self.win)
         self.logScrollbar.pack(side = RIGHT, fill = Y)
         self.logListbox = Listbox(self.win, width = 500, height = 35, yscrollcommand = self.logScrollbar.set)
@@ -69,8 +83,8 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        lf_status = LabelFrame(self.win, text="Test", width=900, height=10)
-        lf_status.pack(side=BOTTOM, fill=X)
+        lf_status = LabelFrame(self.win, text = "Test", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_status.pack(side = BOTTOM, fill = X)
         self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20 )
         self.stlable.pack(side=BOTTOM, fill=X)
 
@@ -79,7 +93,7 @@ class Win:
         ## setup entry
         self.b64str.trace("w", lambda name, index, mode, sv=self.b64str:self.onB64StrChange(sv))
         self.b64str.set("please type Protobuf.Base64 here")
-        lf_enbox = LabelFrame(self.win, text="base64", width=98, height=10)
+        lf_enbox = LabelFrame(self.win, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
         #lf_enbox.grid(row=0)
         lf_enbox.pack(side=BOTTOM, fill=X)
         enbox = Entry(lf_enbox, width=98, textvariable=self.b64str)
@@ -106,16 +120,16 @@ class Win:
 
     # 添加用户级log的按钮
     def addUserLevelCheckbox(self, name, callback):
-        cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10)
-        win_checkbox.add(cb_items, sticky="w")
+        cb_items = Checkbutton(self.userLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1)
+        self.userLevelLogWin_checkbox.add(cb_items, sticky="w")
 
 
     # 添加系统级log的按钮,默认勾选
     def addSystemLevelCheckbox(self, name, callback):
         global systemLevelLogDict
         systemLevelLogDict[name] = True
-        cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width = 10, height = 1)
-        win_checkbox.add(cb_items, sticky="w")
+        cb_items = Checkbutton(self.systemLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1)
+        self.systemLevelLogWin_checkbox.add(cb_items, sticky="w")
 
         cb_items.select()
 
@@ -172,8 +186,8 @@ class Win:
 
 
     def clean_checkbox(self):
-        cb_items = Checkbutton(win_checkbox, text="name", bg='grey')
-        win_checkbox.add(cb_items)
+        cb_items = Checkbutton(systemLevelLogWin_checkbox, text="name", bg='grey')
+        systemLevelLogWin_checkbox.add(cb_items)
 
 
     def _quit(self):
