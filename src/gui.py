@@ -104,19 +104,23 @@ class Win:
         print("male: %d,\nfemale: %d" % (11,33))
 
 
+    # 添加用户级log的按钮
     def addUserLevelCheckbox(self, name, callback):
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width=10)
         win_checkbox.add(cb_items, sticky="w")
 
 
-    def systemLevelCheckbox(self, name, callback):
+    # 添加系统级log的按钮,默认勾选
+    def addSystemLevelCheckbox(self, name, callback):
         global systemLevelLogDict
         systemLevelLogDict[name] = True
         cb_items = Checkbutton(win_checkbox, text=name, bg='grey', command=callback, width = 10, height = 1)
         win_checkbox.add(cb_items, sticky="w")
+
         cb_items.select()
 
 
+    # 刷新文本框，全部重新输出
     def refreshTextInfo(self,):
         global systemLevelLogDict
 
@@ -133,6 +137,7 @@ class Win:
                 self.logListbox.pack(side = LEFT, fill = BOTH)
         
 
+    # 系统级log SYSTEM_LOG_LEVEL
     def systemLevelLog(self, name):
         global systemLevelLogDict
 
@@ -140,6 +145,7 @@ class Win:
         self.refreshTextInfo()
 
 
+    # 用户级log json文件内正则表达式过滤出来的信息
     def userLevelLog(self, name):
         if 0 == len(self.userLevelLogList):
             self.userLevelLogList = filterll(self.logList, RE_LISTS)
@@ -156,18 +162,13 @@ class Win:
         global RE_LISTS
         global SYSTEM_LOG_LEVEL 
 
-#       for logLevel in SYSTEM_LOG_LEVEL:
-#           self.systemLevelCheckbox(logLevel[1], lambda:self.systemLevelLog(logLevel[1]))
-            
-        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[0][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[0][1]))
-        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[1][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[1][1]))
-        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[2][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[2][1]))
-        self.systemLevelCheckbox(SYSTEM_LOG_LEVEL[3][1], lambda:self.systemLevelLog(SYSTEM_LOG_LEVEL[3][1]))
+        for logLevel in SYSTEM_LOG_LEVEL:
+            self.addSystemLevelCheckbox(logLevel[1], (lambda x : lambda:self.systemLevelLog(x))(logLevel[1]))
 
-        #for itemName in RE_LISTS:
-        #    self.addUserLevelCheckbox(itemName, lambda:self.userLevelLog(itemName, 0))
-        self.addUserLevelCheckbox("RE_UC", lambda:self.userLevelLog("RE_UC"))
-        self.addUserLevelCheckbox("RE_UD", lambda:self.userLevelLog("RE_UD"))
+        for itemName in RE_LISTS:
+            self.addUserLevelCheckbox(itemName, (lambda x : lambda : self.userLevelLog(x))(itemName))
+
+        self.refreshTextInfo()
 
 
     def clean_checkbox(self):
