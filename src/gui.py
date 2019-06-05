@@ -27,9 +27,10 @@ class Win:
         self.filePath = ""
         self.logList = []
         self.userLevelLogList = []
-        self.b64str = StringVar()
         self.logListbox = None
         self.logScrollbar = None
+        self.lf_status = None
+        self.base64Entry = None
         self.setupWindow()
 
 
@@ -38,10 +39,10 @@ class Win:
         self.stlable.setvar()
 
 
-    def onB64StrChange(self, str):
-        st = str.get()
-        print(printBuffromB64(st))
-        #self.b64str.set( printBuffromB64(st))
+    def onB64StrChange(self, event):
+        self.stlable.delete('1.0', tk.END)
+        st = self.base64Entry.get()
+        self.stlable.insert('end', printBuffromB64(st))
 
 
     def setupMenu(self):
@@ -83,21 +84,24 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        lf_status = LabelFrame(self.win, text = "Test", width = 900, height = 10, font = ('Arial', 11, 'bold'))
-        lf_status.pack(side = BOTTOM, fill = X)
-        self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20 )
-        self.stlable.pack(side=BOTTOM, fill=X)
+        self.lf_status = LabelFrame(self.win, text = "Base64", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        self.lf_status.pack(side = BOTTOM, fill = X)
+        self.stlable = tk.scrolledtext.ScrolledText(self.lf_status, bg="grey", width = 98, height = 20 )
+        self.stlable.pack(side = BOTTOM, fill = X)
 
 
     def setupB64Entry(self):
         ## setup entry
-        self.b64str.trace("w", lambda name, index, mode, sv=self.b64str:self.onB64StrChange(sv))
-        self.b64str.set("please type Protobuf.Base64 here")
-        lf_enbox = LabelFrame(self.win, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
-        #lf_enbox.grid(row=0)
-        lf_enbox.pack(side=BOTTOM, fill=X)
-        enbox = Entry(lf_enbox, width=98, textvariable=self.b64str)
-        enbox.pack(fill=X)
+       # lf_enbox = LabelFrame(self.lf_status, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
+       # lf_enbox.pack(side=BOTTOM, fill=X)
+
+        tempEntryStr = StringVar()
+        tempEntryStr.set("please type Protobuf.Base64 here")
+
+       # self.base64Entry = tk.Entry(lf_enbox, justify = 'left', textvariable = tempEntryStr)
+        self.base64Entry = tk.Entry(self.lf_status, justify = 'left', textvariable = tempEntryStr)
+        self.base64Entry.pack(fill = X)
+        self.base64Entry.bind('<Key-Return>', self.onB64StrChange)
 
 
     def setupWindow(self):
@@ -110,8 +114,8 @@ class Win:
         self.setupCheckboxes()
         self.setupScrollbar()
         self.setupCheckButton()
-        self.setupB64Entry()
         self.setupStatus()
+        self.setupB64Entry()
 
 
     def var_states(self,):

@@ -3,7 +3,10 @@ import sys
 sys.path.append("..")
 sys.path.append("../protobuf_release/py")
 
-from protobuf_release.py import *
+#from protobuf_release.py import *
+#from PbInput_pb2.py import *
+#from ../protobuf_release/py import PbInput_pb2
+import PbInput_pb2
 import base64
 import binascii
 import re
@@ -89,7 +92,7 @@ class LogItem:
         self.file = ""
         self.line = int(0)
         self.log = ""
-        self.filteredInfo = ""
+        self.filteredInfo = ""  # 正则表达式过滤得到的信息
         self.filteredInfoDisplayFlag = False
 
     def __str__(self):
@@ -144,6 +147,3 @@ if __name__ == '__main__':
     
     #print(line,size,len(lists))
     #printBuffromB64("MQ==")
-
-
-
