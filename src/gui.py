@@ -27,10 +27,9 @@ class Win:
         self.filePath = ""
         self.logList = []
         self.userLevelLogList = []
+        self.b64str = StringVar()
         self.logListbox = None
         self.logScrollbar = None
-        self.lf_status = None
-        self.base64Entry = None
         self.setupWindow()
 
 
@@ -39,10 +38,21 @@ class Win:
         self.stlable.setvar()
 
 
-    def onB64StrChange(self, event):
-        self.stlable.delete('1.0', tk.END)
-        st = self.base64Entry.get()
-        self.stlable.insert('end', printBuffromB64(st))
+    def onB64StrChange(self, str):
+        self.stlable.delete(1.0, END)
+        base64Str = str.get()
+        if 0 == len(base64Str):
+            return
+
+        print(printBuffromB64(base64Str))
+
+        # 判断输入的base64字符串是否被包含在被选中的log信息中
+        if 0 == len(self.logListbox.curselection()):
+            return 
+
+        curSelectStr = self.logListbox.get(self.logListbox.curselection())
+        if 0 <= curSelectStr.find(base64Str):
+            self.stlable.insert('end', curSelectStr)
 
 
     def setupMenu(self):
@@ -58,7 +68,6 @@ class Win:
         lf_encheck= LabelFrame(self.win, text = "Items", width = 900, height = 10, font = ('Arial', 11, 'bold'))
         lf_encheck.pack(side=TOP, fill = X)
 
-#       self.win_checkbox = PanedWindow(lf_encheck, width = 900, orient = VERTICAL)
         self.win_checkbox = PanedWindow(lf_encheck, orient = VERTICAL)
         self.win_checkbox.pack(fill = X)
 
@@ -84,24 +93,20 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        self.lf_status = LabelFrame(self.win, text = "Base64", width = 900, height = 10, font = ('Arial', 11, 'bold'))
-        self.lf_status.pack(side = BOTTOM, fill = X)
-        self.stlable = tk.scrolledtext.ScrolledText(self.lf_status, bg="grey", width = 98, height = 20 )
-        self.stlable.pack(side = BOTTOM, fill = X)
+        lf_status = LabelFrame(self.win, text = "Test", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_status.pack(side = BOTTOM, fill = X)
+        self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20)
+        self.stlable.pack(side=BOTTOM, fill=X)
 
 
     def setupB64Entry(self):
         ## setup entry
-       # lf_enbox = LabelFrame(self.lf_status, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
-       # lf_enbox.pack(side=BOTTOM, fill=X)
-
-        tempEntryStr = StringVar()
-        tempEntryStr.set("please type Protobuf.Base64 here")
-
-       # self.base64Entry = tk.Entry(lf_enbox, justify = 'left', textvariable = tempEntryStr)
-        self.base64Entry = tk.Entry(self.lf_status, justify = 'left', textvariable = tempEntryStr)
-        self.base64Entry.pack(fill = X)
-        self.base64Entry.bind('<Key-Return>', self.onB64StrChange)
+        self.b64str.set("please type Protobuf.Base64 here")
+        self.b64str.trace("w", lambda name, index, mode, sv=self.b64str:self.onB64StrChange(sv))
+        lf_enbox = LabelFrame(self.win, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
+        lf_enbox.pack(side=BOTTOM, fill=X)
+        enbox = Entry(lf_enbox, width=98, textvariable=self.b64str)
+        enbox.pack(fill=X)
 
 
     def setupWindow(self):
@@ -147,11 +152,11 @@ class Win:
         for listContent in self.logList:
             for level in systemLevelLogDict:
                 if level == listContent.lvl and True == systemLevelLogDict[level]:
-                    self.logListbox.insert(END, str(listContent.time) + "       " + listContent.log + "\n")
+                    self.logListbox.insert(END, str(listContent.time) + "       " + listContent.log)
                     self.logListbox.pack(side = LEFT, fill = BOTH)
 
             if True == listContent.filteredInfoDisplayFlag:
-                self.logListbox.insert(END, str(listContent.time) + "       " + listContent.filteredInfo + "\n")
+                self.logListbox.insert(END, str(listContent.time) + "       " + listContent.filteredInfo)
                 self.logListbox.pack(side = LEFT, fill = BOTH)
         
 
