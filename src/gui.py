@@ -44,8 +44,6 @@ class Win:
         if 0 == len(base64Str):
             return
 
-        print(printBuffromB64(base64Str))
-
         # 判断输入的base64字符串是否被包含在被选中的log信息中
         if 0 == len(self.logListbox.curselection()):
             return 
