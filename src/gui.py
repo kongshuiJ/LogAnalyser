@@ -39,18 +39,28 @@ class Win:
 
 
     def onB64StrChange(self, str):
+        global systemLevelLogDict
         self.stlable.delete(1.0, END)
         base64Str = str.get()
         if 0 == len(base64Str):
             return
 
-        # 判断输入的base64字符串是否被包含在被选中的log信息中
-        if 0 == len(self.logListbox.curselection()):
-            return 
+#       # 判断输入的base64字符串是否被包含在被选中的log信息中
+#       if 0 == len(self.logListbox.curselection()):
+#           return 
+#       curSelectStr = self.logListbox.get(self.logListbox.curselection())
+#       if 0 <= curSelectStr.find(base64Str):
+#           self.stlable.insert('end', curSelectStr)
+        
+        for listContent in self.logList:
+            for level in systemLevelLogDict:
+                if level == listContent.lvl and True == systemLevelLogDict[level]:
+                    if 0 <= listContent.log.find(base64Str):
+                        self.stlable.insert('end', listContent.log + '\n')
 
-        curSelectStr = self.logListbox.get(self.logListbox.curselection())
-        if 0 <= curSelectStr.find(base64Str):
-            self.stlable.insert('end', curSelectStr)
+            if True == listContent.filteredInfoDisplayFlag:
+                if 0 <= listContent.filteredInfo.find(base64Str):
+                    self.stlable.insert('end', listContent.filteredInfo + '\n')
 
 
     def setupMenu(self):
