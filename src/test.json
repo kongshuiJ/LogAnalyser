@@ -1,0 +1,10 @@
+{
+    "RE_UC": [
+        [ "r'.*USR_CTR_(\\S*).*'", "用户信号: " , "User Signal: " ],
+        [ "r'.*AUDIO_(\\S*).*'", "语言播放: ", "Voice playback: " ]
+    ],
+
+    "RE_UD": [
+        [ "r'.*ERROR_(\\S*).*'" , "错误信息: " , "Error info: " ]
+    ]
+}

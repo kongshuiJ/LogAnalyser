@@ -1,7 +1,10 @@
+#!/usr/bin/python3
+import sys
+sys.path.append("..")
+sys.path.append("../protobuf_release/py")
 import tkinter as tk
 from tkinter import *
 from tkinter import scrolledtext    # 导入滚动文本框的模块
-import sys
 import os
 import re
 import time
