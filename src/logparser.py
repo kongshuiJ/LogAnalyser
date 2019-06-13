@@ -27,11 +27,11 @@ LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{2,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*
 RE_LISTS = []
 
 
-def printBuffromB64(str):
+def printBuffromB64(base64Str):
     try:
-        print( str )
-        buf = str.encode(encoding="utf-8")
-        raw = base64.b64decode(str)
+        print( base64Str )
+        buf = base64Str.encode(encoding="utf-8")
+        raw = base64.b64decode(base64Str)
         input = PbInput_pb2.PbInput()
         input.ParseFromString(raw)
         print( input )

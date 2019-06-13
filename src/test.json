@@ -1,11 +1,11 @@
 {
     "USR_CONTROL": [
-        [ "r'.*USR_CTR_(\\S*).*'", "用户信号: %s " , "User Signal: %s" ],
-        [ "r'.*AUDIO_(\\S*).*'", "语言播放: %s", "Voice playback: %s" ]
+        [ "r'.*USR_CTR_(\\S*).*'", "用户信号:  " , "User Signal: " ],
+        [ "r'.*AUDIO_(\\S*).*'", "语言播放: ", "Voice playback: " ]
     ],
 
     "REPORT&PERSIST": [
-        [ "r'.*(Report.*)'" , "日志信息: %s " , "Report: %s" ],
-        [ "r'.*(>>>.*)'" , "日志信息: %s " , "Report: %s" ]
+        [ "r'.*(Report.*)'" , "日志信息:  " , "Report: " ],
+        [ "r'.*(>>>.*)'" , "日志信息:  " , "Report: " ]
     ]
 }
