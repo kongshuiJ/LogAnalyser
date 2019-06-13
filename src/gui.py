@@ -41,10 +41,10 @@ class Win:
         self.stlable.setvar()
 
 
-    def onB64StrChange(self, str):
+    def onB64StrChange(self, searchStr):
         global systemLevelLogDict
         self.stlable.delete(1.0, END)
-        base64Str = str.get()
+        base64Str = searchStr.get()
         if 0 == len(base64Str):
             return
 
@@ -56,14 +56,17 @@ class Win:
 #           self.stlable.insert('end', curSelectStr)
         
         for listContent in self.logList:
+            flag = False
             for level in systemLevelLogDict:
                 if level == listContent.lvl and True == systemLevelLogDict[level]:
                     if 0 <= listContent.log.find(base64Str):
-                        self.stlable.insert('end', listContent.log + '\n')
+                        self.stlable.insert('end', str(listContent.time) + "       " + listContent.log + '\n')
 
-            if True == listContent.filteredInfoDisplayFlag:
-                if 0 <= listContent.filteredInfo.find(base64Str):
-                    self.stlable.insert('end', listContent.filteredInfo + '\n')
+                if False == flag:
+                    flag = True
+                    if True == listContent.filteredInfoDisplayFlag:
+                        if 0 <= listContent.filteredInfo.find(base64Str):
+                            self.stlable.insert('end', str(listContent.time) + "       " + listContent.filteredInfo + '\n')
 
 
     def setupMenu(self):
@@ -161,14 +164,17 @@ class Win:
         self.logListbox.delete(0, END)
 
         for listContent in self.logList:
+            flag = False
             for level in systemLevelLogDict:
                 if level == listContent.lvl and True == systemLevelLogDict[level]:
                     self.logListbox.insert(END, str(listContent.time) + "       " + listContent.log)
                     self.logListbox.pack(side = LEFT, fill = BOTH)
 
-            if True == listContent.filteredInfoDisplayFlag:
-                self.logListbox.insert(END, str(listContent.time) + "       " + listContent.filteredInfo)
-                self.logListbox.pack(side = LEFT, fill = BOTH)
+                if False == flag:
+                    flag = True
+                    if True == listContent.filteredInfoDisplayFlag:
+                        self.logListbox.insert(END, str(listContent.time) + "       " + listContent.filteredInfo)
+                        self.logListbox.pack(side = LEFT, fill = BOTH)
         
 
     # 系统级log SYSTEM_LOG_LEVEL
