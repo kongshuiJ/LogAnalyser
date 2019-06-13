@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 import os
 import sys
 sys.path.append("..")
@@ -28,10 +29,12 @@ RE_LISTS = []
 
 def printBuffromB64(str):
     try:
+        print( str )
         buf = str.encode(encoding="utf-8")
         raw = base64.b64decode(str)
         input = PbInput_pb2.PbInput()
         input.ParseFromString(raw)
+        print( input )
         return input
     except:
         return "Exception when parse base"
@@ -136,12 +139,13 @@ def parseItemFile(filePath):
 
 
 if __name__ == '__main__':
-    filePath="test.log"
-    parseItemFile("test.json")
-    line, size, lists = loadLogFile(filePath)
-    itlist = filter_category(lists)
-    aa = filterll(itlist, RE_LISTS)
-    print(aa)
+   #filePath="test.log"
+   #parseItemFile("test.json")
+   #line, size, lists = loadLogFile(filePath)
+   #itlist = filter_category(lists)
+   #aa = filterll(itlist, RE_LISTS)
+   #print(aa)
+    printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
 
 
     
