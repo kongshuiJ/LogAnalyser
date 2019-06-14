@@ -192,7 +192,7 @@ class Win:
 
         for listContent in self.logList:
             for l in RE_LISTS[name]:
-                if 0 <= listContent.filteredInfo.find(l[1]):
+                if 0 <= listContent.filteredInfo.find(l[1][0:l[1].find(':')]):
                     listContent.filteredInfoDisplayFlag = bool(1 - listContent.filteredInfoDisplayFlag)
 
         self.refreshTextInfo()
