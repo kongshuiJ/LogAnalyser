@@ -1,4 +1,8 @@
 {
+    "ALL": [
+        [ "r'(.*)'", "%s " , "%s" ],
+    ],
+
     "USR_CONTROL": [
         [ "r'.*STATE::\\s==\\sEN\\s==>\\s(\\S*).*'", "进入状态: %s " , "Enter:: %s" ],
         [ "r'.*STATE::\\s<==\\sEX\\s==\\s(\\S*).*'", "退出状态: %s " , "Exit :: %s" ],
@@ -6,7 +10,7 @@
         [ "r'.*AUDIO_(\\S*).*'", "语言播放: %s", "Voice playback: %s" ]
     ],
 
-    "REPORT&PERSIST": [
+    "PERSISTMAP": [
         [ "r'.*Report.*\\s'" , "日志信息:  "   , "Report: " ],
         [ "r'.*(>>>.*)'"     , "地图判断: %s "    , "MapEvaluate: %s" ]
     ]
