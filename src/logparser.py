@@ -72,6 +72,12 @@ def loadLogFile(filename):
 
 def filterll(listraw, RELists):
     outList = []
+
+    for catogory in RELists:
+        print("cat:: ",catogory )
+        for pat in RELists[catogory]:
+            print(pat)
+
     for l in listraw:
         needprint = False
         for catogory in RELists:
@@ -79,7 +85,7 @@ def filterll(listraw, RELists):
                 mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
-                    l.filteredInfo = pat[1] + "%s" % mg.groups()
+                    l.filteredInfo = pat[1] % mg.groups()
 
         if needprint:
             outList.append(l.filteredInfo)
@@ -139,13 +145,15 @@ def parseItemFile(filePath):
 
 
 if __name__ == '__main__':
-   #filePath="test.log"
-   #parseItemFile("test.json")
-   #line, size, lists = loadLogFile(filePath)
-   #itlist = filter_category(lists)
-   #aa = filterll(itlist, RE_LISTS)
-   #print(aa)
-    printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
+    filePath="/home/bacon/logmain_log_file000.log"
+    re_list = parseItemFile("test.json")
+    #print(re_list)
+    line, size, lists = loadLogFile(filePath)
+    itlist = filter_category(lists)
+    aa = filterll(itlist, RE_LISTS)
+    for a in aa:
+        print(a)
+    #printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
 
 
     
