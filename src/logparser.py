@@ -70,8 +70,12 @@ def loadLogFile(filename):
     return linecnt, filesize, loglist
 
 
-def filterll(listraw, RELists):
+def filterll(listraw, RELists, logLanguageIndex):
     outList = []
+
+    # 如果选择的language index既不是1也不是2那么默认为1
+    if 1 != logLanguageIndex and 2 != logLanguageIndex:
+        logLanguageIndex = 1
 
     for catogory in RELists:
         print("cat:: ",catogory )
@@ -85,7 +89,7 @@ def filterll(listraw, RELists):
                 mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
-                    l.filteredInfo = pat[1] % mg.groups()
+                    l.filteredInfo = pat[logLanguageIndex] % mg.groups()
 
         if needprint:
             outList.append(l.filteredInfo)

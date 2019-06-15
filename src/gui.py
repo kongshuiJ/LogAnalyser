@@ -34,6 +34,7 @@ class Win:
         self.logListbox = None
         self.logScrollbar = None
         self.setupWindow()
+        self.logLanguageIndex = 1    # 1: chinese    2:english 对应json文件
 
 
     def loop(self):
@@ -64,13 +65,35 @@ class Win:
                         self.stlable.insert('end', "\n")
 
 
+    def _chineseLanguage(self):
+        self.logLanguageIndex = 1
+        if 0 != len(self.userLevelLogList):
+            self.userLevelLogList.clear()
+            self.userLevelLogList = filterll(self.logList, RE_LISTS, self.logLanguageIndex)
+
+
+    def _englishLanguage(self):
+        self.logLanguageIndex = 2
+        if 0 != len(self.userLevelLogList):
+            self.userLevelLogList.clear()
+            self.userLevelLogList = filterll(self.logList, RE_LISTS, self.logLanguageIndex)
+
+
     def setupMenu(self):
         menuBar = Menu(self.win)
         self.win.config(menu = menuBar)
         fileMenu = Menu(menuBar)
+
+        # 文件栏
         menuBar.add_cascade(label = "File", menu = fileMenu, font = ('Arial', 13, 'bold'))
         fileMenu.add_command(label = "load log file...", command = self._parseFile, font = ('Arial', 10, 'bold'))
         fileMenu.add_command(label = "exit", command = self._quit, font = ('Arial', 10, 'bold'))
+
+        languageMenu = Menu(menuBar)
+        menuBar.add_cascade(label = "Language", menu = languageMenu, font = ('Arial', 13, 'bold'))
+        # 此处的command调用的函数应该可以用lambda代替lambda : (self.logLanguageIndex = 1)
+        languageMenu.add_command(label = "chinese", command = self._chineseLanguage, font = ('Arial', 10, 'bold'))
+        languageMenu.add_command(label = "english", command = self._englishLanguage, font = ('Arial', 10, 'bold'))
 
 
     def setupCheckboxes(self):
@@ -102,7 +125,7 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        lf_status = LabelFrame(self.win, text = "Test", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_status = LabelFrame(self.win, text = "Filtered information", width = 900, height = 10, font = ('Arial', 11, 'bold'))
         lf_status.pack(side = BOTTOM, fill = X)
         self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20)
         self.stlable.pack(side=BOTTOM, fill=X)
@@ -138,7 +161,7 @@ class Win:
 
     # 添加用户级log的按钮
     def addUserLevelCheckbox(self, name, callback):
-        cb_items = Checkbutton(self.userLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1)
+        cb_items = Checkbutton(self.userLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1, indicatoron = False)
         self.userLevelLogWin_checkbox.add(cb_items, sticky="w")
 
 
@@ -146,7 +169,7 @@ class Win:
     def addSystemLevelCheckbox(self, name, callback):
         global systemLevelLogDict
         systemLevelLogDict[name] = True
-        cb_items = Checkbutton(self.systemLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1)
+        cb_items = Checkbutton(self.systemLevelLogWin_checkbox, text = name, bg = 'grey', command = callback, width = 10, height = 1, indicatoron = False)
         self.systemLevelLogWin_checkbox.add(cb_items, sticky="w")
 
         cb_items.select()
@@ -177,13 +200,12 @@ class Win:
     # 用户级log json文件内正则表达式过滤出来的信息
     def userLevelLog(self, name):
         if 0 == len(self.userLevelLogList):
-            self.userLevelLogList = filterll(self.logList, RE_LISTS)
+            self.userLevelLogList = filterll(self.logList, RE_LISTS, self.logLanguageIndex)
 
         for listContent in self.logList:
             for l in RE_LISTS[name]:
-                if 0 <= listContent.filteredInfo.find(l[1][0:l[1].find(':')]):
+                if 0 <= listContent.filteredInfo.find(l[self.logLanguageIndex][0:l[self.logLanguageIndex].find(':')]):
                     listContent.filteredInfoDisplayFlag = bool(1 - listContent.filteredInfoDisplayFlag)
-
 
         self.refreshTextInfo()
 
