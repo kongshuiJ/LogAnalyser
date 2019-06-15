@@ -204,7 +204,7 @@ class Win:
 
         for listContent in self.logList:
             for l in RE_LISTS[name]:
-                if 0 <= listContent.filteredInfo.find(l[self.logLanguageIndex][0:l[self.logLanguageIndex].find(':')]):
+                if 0 <= listContent.filteredInfo.find(l[self.logLanguageIndex][0:l[self.logLanguageIndex].find("%s")]):
                     listContent.filteredInfoDisplayFlag = bool(1 - listContent.filteredInfoDisplayFlag)
 
         self.refreshTextInfo()
