@@ -60,7 +60,7 @@ class Win:
             for level in systemLevelLogDict:
                 if True == listContent.filteredInfoDisplayFlag and level == listContent.lvl and True == systemLevelLogDict[level]:
                     if 0 <= listContent.filteredInfo.find(base64Str) or 0 <= str(listContent.time).find(base64Str) or 0 <= listContent.lvl.find(base64Str):
-                        printContent = ("%-12s" + "%-10s" + listContent.filteredInfo) % (str(listContent.time), listContent.lvl)
+                        printContent = ("%-12s" + "%-10s" + listContent.filteredInfo) % (str(("%.3f" % listContent.time)), listContent.lvl)
                         self.stlable.insert('end', printContent)
                         self.stlable.insert('end', "\n")
 
@@ -184,7 +184,7 @@ class Win:
         for listContent in self.logList:
             for level in systemLevelLogDict:
                 if True == listContent.filteredInfoDisplayFlag and level == listContent.lvl and True == systemLevelLogDict[level]:
-                    printContent = ("%-12s" + "%-10s" + listContent.filteredInfo) % (str(listContent.time), listContent.lvl)
+                    printContent = ("%-12s" + "%-10s" + listContent.filteredInfo) % (str(("%.3f" % listContent.time)), ("%-10s" % listContent.lvl))
                     self.logListbox.insert(END, printContent)
                     self.logListbox.pack(side = LEFT, fill = BOTH)
         
