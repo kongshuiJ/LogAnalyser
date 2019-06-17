@@ -141,7 +141,7 @@ def filter_category(listraw):
 def parseItemFile(filePath):
     global RE_LISTS
 
-    fileHandle = open(filePath, encoding = "utf-8")
+    fileHandle = open(filePath, "r", encoding = "utf-8")
     readFile = fileHandle.read()
     RE_LISTS = json.loads(readFile)
 

@@ -14,6 +14,7 @@ import tkinter.scrolledtext
 import tkinter.messagebox
 
 from logparser import *
+from quickViewLog_gui import *
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
@@ -25,9 +26,10 @@ class Win:
         self.stlable = None
         self.win_checkbox = None
         self.systemLevelLogWin_checkbox = None
+        self.font = ("Times New Roman", 12, "bold")
         self.userLevelLogWin_checkbox = None
         self.list_checkboxes = None
-        self.filePath = ""
+        self.logFilePath = ""
         self.logList = []
         self.userLevelLogList = []
         self.b64str = StringVar()
@@ -35,6 +37,7 @@ class Win:
         self.logScrollbar = None
         self.setupWindow()
         self.logLanguageIndex = 1    # 1: chinese    2:english 对应json文件
+        self.quickViewLogToplevel = None
 
 
     def loop(self):
@@ -79,25 +82,34 @@ class Win:
             self.userLevelLogList = filterll(self.logList, RE_LISTS, self.logLanguageIndex)
 
 
+    def quickViewLog(self):
+        self.quickViewLog = QuickViewLog(self.logFilePath)
+
     def setupMenu(self):
         menuBar = Menu(self.win)
         self.win.config(menu = menuBar)
         fileMenu = Menu(menuBar)
 
         # 文件栏
-        menuBar.add_cascade(label = "File", menu = fileMenu, font = ('Arial', 13, 'bold'))
-        fileMenu.add_command(label = "load log file...", command = self._parseFile, font = ('Arial', 10, 'bold'))
-        fileMenu.add_command(label = "exit", command = self._quit, font = ('Arial', 10, 'bold'))
+        menuBar.add_cascade(label = "File", menu = fileMenu, font = self.font)
+        fileMenu.add_command(label = "load log file...", command = self._parseFile, font = self.font)
+        fileMenu.add_command(label = "exit", command = self._quit, font = self.font)
 
+        # 语言栏
         languageMenu = Menu(menuBar)
-        menuBar.add_cascade(label = "Language", menu = languageMenu, font = ('Arial', 13, 'bold'))
+        menuBar.add_cascade(label = "Language", menu = languageMenu, font = self.font)
         # 此处的command调用的函数应该可以用lambda代替lambda : (self.logLanguageIndex = 1)
-        languageMenu.add_command(label = "chinese", command = self._chineseLanguage, font = ('Arial', 10, 'bold'))
-        languageMenu.add_command(label = "english", command = self._englishLanguage, font = ('Arial', 10, 'bold'))
+        languageMenu.add_command(label = "chinese", command = self._chineseLanguage, font = self.font)
+        languageMenu.add_command(label = "english", command = self._englishLanguage, font = self.font)
+
+        # 视图栏
+        viewMenu = Menu(menuBar)
+        menuBar.add_cascade(label = "View", menu = viewMenu, font = self.font)
+        viewMenu.add_command(label = "quick view log", command = self.quickViewLog, font = self.font)
 
 
     def setupCheckboxes(self):
-        lf_encheck= LabelFrame(self.win, text = "Items", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_encheck= LabelFrame(self.win, text = "Items", width = 900, height = 10, font = self.font)
         lf_encheck.pack(side=TOP, fill = X)
 
         self.win_checkbox = PanedWindow(lf_encheck, orient = VERTICAL)
@@ -106,13 +118,13 @@ class Win:
         # 系统级log
         self.systemLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
         self.win_checkbox.add(self.systemLevelLogWin_checkbox)
-        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox, text = "system level item: ", font = ('Arial', 10, 'bold'))
+        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox, text = "system level item: ", font = self.font)
         self.systemLevelLogWin_checkbox.add(systemLevelLogLabel)
 
         # 用户级log
         self.userLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
         self.win_checkbox.add(self.userLevelLogWin_checkbox)
-        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox, text = "  user level item  : ", font =('Arial', 10, 'bold'))
+        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox, text = "  user level item  : ", font =self.font)
         self.userLevelLogWin_checkbox.add(userLevelLogLabel)
 
 
@@ -125,7 +137,7 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        lf_status = LabelFrame(self.win, text = "Filtered information", width = 900, height = 10, font = ('Arial', 11, 'bold'))
+        lf_status = LabelFrame(self.win, text = "Filtered information", width = 900, height = 10, font = self.font)
         lf_status.pack(side = BOTTOM, fill = X)
         self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20)
         self.stlable.pack(side=BOTTOM, fill=X)
@@ -135,7 +147,7 @@ class Win:
         ## setup entry
         self.b64str.set("please type Protobuf.Base64 here")
         self.b64str.trace("w", lambda name, index, mode, sv=self.b64str:self.onB64StrChange(sv))
-        lf_enbox = LabelFrame(self.win, text = "base64", width = 98, height = 10, font = ('Arial', 11, 'bold'))
+        lf_enbox = LabelFrame(self.win, text = "base64", width = 98, height = 10, font = self.font)
         lf_enbox.pack(side=BOTTOM, fill=X)
         enbox = Entry(lf_enbox, width=98, textvariable=self.b64str)
         enbox.pack(fill=X)
@@ -233,18 +245,18 @@ class Win:
 
 
     def _parseFile(self):
-        filePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
-        if os.path.exists(filePath):
-            print("open file", filePath)
+        self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
+        if os.path.exists(self.logFilePath):
+            print("open file", self.logFilePath)
 
             # 确定打开文件后,对log文件进行解析
-            fileLine, fileSize, logList = loadLogFile(filePath)
+            fileLine, fileSize, logList = loadLogFile(self.logFilePath)
             self.logList = filter_category(logList)
             self.refreshTextInfo()
 
         else:
-            print("file not exist!", filePath)
-            filePath = ""
+            print("file not exist!", self.logFilePath)
+            self.logFilePath = ""
 
 
 if __name__ == '__main__':
