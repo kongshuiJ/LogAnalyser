@@ -1,8 +1,6 @@
+#!/usr/bin/python3
 
 SFMList = ["整体分析", "状态分析", "错误分析", "语音分析", "按键分析"]
-PPList = ["整体分析"]
-VTList = ["整体分析"]
-FeatureList = ["AED分析", "RR分析"]
 
 stateDict = {'WAITING':'等待', 'CLEANING':'清扫', 'DOCKING':'回充', 'PAUSE':'暂停', 
              'ERROR':'错误', 'REMOTE':'遥控', 'SLEEPING':'睡眠', 'SPOTING':'定点清扫',
@@ -44,15 +42,22 @@ ctrDict = {'USR_CTR_UP':'前进', 'USR_CTR_DOWN':'后退','USR_CTR_LEFT':'左转
 	   'USR_CTR_CALI_IMU':'IMU校准'}
 
 
-
-
-
-
-
-
-
-
-
-
+# 设置字体大小
 def setFont(fontSize):
     return ("Times New Roman", fontSize, "bold")
+
+
+def getSFMList():
+    return SFMList
+
+
+def getErrorDict():
+    return errorDict
+
+
+def getStateDict():
+    return stateDict
+
+
+def getCtrDict():
+    return ctrDict

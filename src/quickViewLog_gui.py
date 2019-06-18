@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import tkinter as tk
 from tkinter import *
 import tkinter.messagebox
@@ -13,16 +15,28 @@ class QuickViewLog:
         self.logScrollbar = None
         self.logListbox = None
         self.logFilePath = logFilePath
+        self.SFMList = []
+        self.errorDict = []
+        self.stateDict = []
+        self.ctrDict = []
         self.result = []
         self.stateResult = []
         self.errorResult = []
         self.audioResult = []
         self.ctrResult = []
         
+        self.setList()
         self.setupWindow()
         self.setupScrollbar()
         self.setupMenu()
         self.signalLOGAnalysis()
+
+
+    def setList(self):
+        self.SFMList = getSFMList()
+        self.errorDict = getErrorDict()
+        self.stateDict = getStateDict()
+        self.ctrDict = getCtrDict()
 
 
     def signalLOGAnalysis(self):
@@ -128,6 +142,3 @@ class QuickViewLog:
                 self.sfmMenu.add_command(label=item, command=self.SFMCtrAnalysis, font=setFont(12))
             else:
                 print ("Function Is Not Achieve In SFM\n")
-
-
-
