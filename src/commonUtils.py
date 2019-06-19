@@ -61,3 +61,12 @@ def getStateDict():
 
 def getCtrDict():
     return ctrDict
+
+
+# 检测字符串是否只包含某些字符串
+def checkStrComposition(checkedStr, letterList):
+    for letter in checkedStr:
+        if not letterList.count(letter):
+            return False
+
+    return True

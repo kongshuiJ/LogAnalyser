@@ -12,8 +12,9 @@ import PbInput_pb2
 import base64
 import binascii
 import re
-
 import json
+
+from commonUtils import *
 
 # 系统级log
 SYSTEM_LOG_LEVEL = [
@@ -35,7 +36,7 @@ def printBuffromB64(base64Str):
         raw = base64.b64decode(base64Str)
         input = PbInput_pb2.PbInput()
         input.ParseFromString(raw)
-        print( input )
+        print(input)
         return input
     except:
         return "Exception when parse base"
@@ -86,12 +87,19 @@ def filterll(listraw, RELists, logLanguageIndex):
     for l in listraw:
         needprint = False
         for catogory in RELists:
+            flag = False;
             for pat in RELists[catogory]:
                 mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
                     l.filteredInfo = pat[logLanguageIndex] % mg.groups()
+                    # 如果pat[logLanguageIndex]只包含“%s”，说明没有过滤到正确信息，所以直接跳过
+                    if False == checkStrComposition(pat[logLanguageIndex].replace(" ", ""), ["s", "%"]):
+                        flag = True
+                        break
 
+            if True == flag:
+                break
         if needprint:
             outList.append(l.filteredInfo)
 

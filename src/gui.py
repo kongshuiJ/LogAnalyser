@@ -87,6 +87,7 @@ class Win:
     def quickViewLog(self):
         self.quickViewLog = QuickViewLog(self.logFilePath)
 
+
     def setupMenu(self):
         menuBar = Menu(self.win)
         self.win.config(menu = menuBar)
