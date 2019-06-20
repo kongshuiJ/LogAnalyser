@@ -4,14 +4,14 @@
     ],
 
     "USR_CONTROL": [
-        [ "r'.*STATE::\\s==\\sEN\\s==>\\s(\\S*).*'", "进入状态: %s " , "Enter:: %s" ],
-        [ "r'.*STATE::\\s<==\\sEX\\s==\\s(\\S*).*'", "退出状态: %s " , "Exit :: %s" ],
+        [ "r'.*STATE::\\s==\\sEN\\s==>\\s(\\S*).*'", "进入状态: %s " , "Enter: %s" ],
+        [ "r'.*STATE::\\s<==\\sEX\\s==\\s(\\S*).*'", "退出状态: %s " , "Exit : %s" ],
         [ "r'.*USR_CTR_(\\S*).*'", "用户信号: %s" , "User Signal: %s" ],
         [ "r'.*AUDIO_(\\S*).*'", "语言播放: %s", "Voice playback: %s" ]
     ],
 
     "PERSISTMAP": [
-        [ "r'.*Report.*\\s'" , "日志信息:  "   , "Report: " ],
+        [ "r'.*Report.*\\s'" , "日志信息: %s "   , "Report: %s" ],
         [ "r'.*(>>>.*)'"     , "地图判断: %s "    , "MapEvaluate: %s" ]
     ]
 }

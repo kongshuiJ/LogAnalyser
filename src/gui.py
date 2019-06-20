@@ -18,6 +18,9 @@ from logparser import *
 from quickViewLog_gui import *
 from commonUtils import *
 
+
+VERSION = "0.1.4"
+
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
 systemLevelLogDict = {}
@@ -157,7 +160,7 @@ class Win:
 
 
     def setupWindow(self):
-        self.win.title("qfeel log tools")
+        self.win.title("qfeel log tools %s" % VERSION)
         self.win.resizable(True, True)
         self.win.geometry('900x900')
         self.setupMenu()
