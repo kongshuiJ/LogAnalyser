@@ -65,6 +65,10 @@ def tryPrintMap(filename):
                 print(len(bs2))
                 out = PbOutput_pb2.PbOutput()
                 out.ParseFromString(bs2)
+                rawfile = open("pbmapraw.pb",'wb')
+                rawfile.write(bs2,len(bs2))
+                rawfile.close()
+            
             print("file type is QGlobalMap:")
             print(out)
             return
