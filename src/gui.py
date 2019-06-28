@@ -98,7 +98,8 @@ class Win:
 
         # 文件栏
         menuBar.add_cascade(label = "File", menu = fileMenu, font = setFont(12))
-        fileMenu.add_command(label = "load log file...", command = self._parseFile, font = setFont(12))
+        fileMenu.add_command(label = "load log file...", command = lambda: self._parseFile("log"), font = setFont(12))
+        fileMenu.add_command(label = "load pmap file...", command = lambda: self._parseFile("pmap"), font = setFont(12))
         fileMenu.add_command(label = "exit", command = self._quit, font = setFont(12))
 
         # 语言栏
@@ -250,15 +251,22 @@ class Win:
         exit(0)
 
 
-    def _parseFile(self):
-        self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
+    def _parseFile(self, fileType):
+        if "log" == fileType:
+            self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
+        elif "pmap" == fileType:
+            self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("pmaptype", ("*.pmap")), ("all", "*.*")])
+
         if os.path.exists(self.logFilePath):
             print("open file", self.logFilePath)
 
-            # 确定打开文件后,对log文件进行解析
-            fileLine, fileSize, logList = loadLogFile(self.logFilePath)
-            self.logList = filter_category(logList)
-            self.refreshTextInfo()
+            if "log" == fileType:
+                # 确定打开文件后,对log文件进行解析
+                fileLine, fileSize, logList = loadLogFile(self.logFilePath)
+                self.logList = filter_category(logList)
+                self.refreshTextInfo()
+            elif "pmap" == fileType:
+                # 确定打开文件后,对pmap文件进行解析
 
         else:
             print("file not exist!", self.logFilePath)
