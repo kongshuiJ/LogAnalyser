@@ -19,7 +19,7 @@ from quickViewLog_gui import *
 from commonUtils import *
 
 
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]

@@ -23,34 +23,39 @@ def getMapObject(filename):
     fileHandle = open(filename, 'rb')
     if fileHandle :
         bs = fileHandle.read()
+        objectType = ""
         print("reading file:" + filename +" len: " + str(len(bs)))
         try:
             mapObject = PbMap_pb2.PbFloor()
             mapObject.ParseFromString(bs)
-            return "PbFloor", mapObject
+            objectType = "PbFloor"
+            return objectType, mapObject
         except:
-            print("try PbFloor Failed")
+            print("try %s Failed" % objectType)
 
         try:
             mapObject = PbInput_pb2.PbInput()
             mapObject.ParseFromString(bs)
-            return "PbInput", mapObject
+            objectType = "PbInput"
+            return objectType, mapObject
         except:
-            print("try  PbInput Failed")
+            print("try %s Failed" % objectType)
 
         try:
             mapObject = PbOutput_pb2.PbOutput()
             mapObject.ParseFromString(bs)
-            return "PbOutput", mapObject
+            objectType = "PbOutput"
+            return objectType, mapObject
         except:
-            print("try PbOutput Failed")
+            print("try %s Failed" % objectType)
 
         try:
             mapObject = PbMap_pb2.PbMapData()
             mapObject.ParseFromString(bs)
-            return "PbMapData", mapObject
+            objectType = "PbMapData"
+            return objectType, mapObject
         except:
-            print("try  PbMapData Failed")
+            print("try %s Failed" % objectType)
 
         try:
             if len(bs) > 10:
@@ -62,13 +67,14 @@ def getMapObject(filename):
                 rawfile.write(bs2,len(bs2))
                 rawfile.close()
             
-            return "QGlobalMap", mapObject
+            objectType = "QGlobalMap"
+            return objectType, mapObject
         except:
-            print("try  QGlobalMap Failed")
+            print("try %s Failed" % objectType)
 
     else :
-        print("cannot open file " + filename)
-        return "", ""
+        print("cannot open file: " + filename)
+        return objectType, ""
 
 
 if __name__ == '__main__':
