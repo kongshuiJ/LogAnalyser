@@ -17,6 +17,7 @@ import tkinter.messagebox
 from logparser import *
 from quickViewLog_gui import *
 from commonUtils import *
+from pmapParser import *
 
 
 VERSION = "0.1.5"
@@ -35,6 +36,7 @@ class Win:
         self.userLevelLogWin_checkbox = None
         self.list_checkboxes = None
         self.logFilePath = ""
+        self.pmapFilePath = ""
         self.logList = []
         self.userLevelLogList = []
         self.b64str = StringVar()
@@ -252,25 +254,34 @@ class Win:
 
 
     def _parseFile(self, fileType):
+        filePath = ""
         if "log" == fileType:
-            self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
+            filePath = tk.filedialog.askopenfilename(filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
+            self.logFilePath = filePath
         elif "pmap" == fileType:
-            self.logFilePath = tk.filedialog.askopenfilename(filetypes=[("pmaptype", ("*.pmap")), ("all", "*.*")])
+            filePath = tk.filedialog.askopenfilename(filetypes=[("pmaptype", ("*.pmap")), ("all", "*.*")])
+            self.pmapFilePath = filePath
 
-        if os.path.exists(self.logFilePath):
-            print("open file", self.logFilePath)
+
+        if os.path.exists(filePath):
+            print("open file", filePath)
 
             if "log" == fileType:
                 # 确定打开文件后,对log文件进行解析
-                fileLine, fileSize, logList = loadLogFile(self.logFilePath)
+                fileLine, fileSize, logList = loadLogFile(filePath)
                 self.logList = filter_category(logList)
                 self.refreshTextInfo()
             elif "pmap" == fileType:
                 # 确定打开文件后,对pmap文件进行解析
+                mapObjectType, mapObject = getMapObject(filePath)
+                if "" != mapObjectType:
+                    self.stlable.insert('end', mapObject)
+                    self.stlable.insert('end', "\n")
 
         else:
             print("file not exist!", self.logFilePath)
             self.logFilePath = ""
+            self.pmapFilePath = ""
 
 
 if __name__ == '__main__':

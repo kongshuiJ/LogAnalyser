@@ -18,44 +18,44 @@ import base64
 from commonUtils import *
 
 # 第一个返回值: 如果返回""，说明没有识别出object type, 第二个返回值无效
-# 第二个返回值: object
+# 第二个返回值: mapObject
 def getMapObject(filename):
     fileHandle = open(filename, 'rb')
     if fileHandle :
         bs = fileHandle.read()
-        objectType = ""
+        mapObjectType = ""
         print("reading file:" + filename +" len: " + str(len(bs)))
         try:
+            mapObjectType = "PbFloor"
             mapObject = PbMap_pb2.PbFloor()
             mapObject.ParseFromString(bs)
-            objectType = "PbFloor"
-            return objectType, mapObject
+            return mapObjectType, mapObject
         except:
-            print("try %s Failed" % objectType)
+            print("try %s Failed" % mapObjectType)
 
         try:
+            mapObjectType = "PbInput"
             mapObject = PbInput_pb2.PbInput()
             mapObject.ParseFromString(bs)
-            objectType = "PbInput"
-            return objectType, mapObject
+            return mapObjectType, mapObject
         except:
-            print("try %s Failed" % objectType)
+            print("try %s Failed" % mapObjectType)
 
         try:
+            mapObjectType = "PbOutput"
             mapObject = PbOutput_pb2.PbOutput()
             mapObject.ParseFromString(bs)
-            objectType = "PbOutput"
-            return objectType, mapObject
+            return mapObjectType, mapObject
         except:
-            print("try %s Failed" % objectType)
+            print("try %s Failed" % mapObjectType)
 
         try:
+            mapObjectType = "PbMapData"
             mapObject = PbMap_pb2.PbMapData()
             mapObject.ParseFromString(bs)
-            objectType = "PbMapData"
-            return objectType, mapObject
+            return mapObjectType, mapObject
         except:
-            print("try %s Failed" % objectType)
+            print("try %s Failed" % mapObjectType)
 
         try:
             if len(bs) > 10:
@@ -67,14 +67,15 @@ def getMapObject(filename):
                 rawfile.write(bs2,len(bs2))
                 rawfile.close()
             
-            objectType = "QGlobalMap"
-            return objectType, mapObject
+            mapObjectType = "QGlobalMap"
+            return mapObjectType, mapObject
         except:
-            print("try %s Failed" % objectType)
+            print("try %s Failed" % mapObjectType)
 
     else :
+        mapObjectType = ""
         print("cannot open file: " + filename)
-        return objectType, ""
+        return mapObjectType, ""
 
 
 if __name__ == '__main__':
