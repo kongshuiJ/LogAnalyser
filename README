@@ -1,7 +1,7 @@
 一、安装依赖：
     sudo apt-get install python3-pip
     sudo pip3 install qrcode
-    sudo apt-get install libudev1 
+    sudo apt-get install libudev1
     sudo apt-get install python3-tk
     sudo pip3 install qrcode==4.0.1 -i https://pypi.tuna.tsinghua.edu.cn/simple
 
@@ -14,13 +14,13 @@
                                    [E]: error
                                    [W]: warn
     4.软件界面"user level item"功能必须由编写好的json文件支持，正常情况json文件内容应该由相关模块的开发人员提前编写；
-    5.使用者必须确定点击的某个"user level item"是属于哪一个"system level item"，只有在所属的"system level item"被按下后，才会显示出正确的"user level item"。
+    5.使用者必须确定点击的某个"user level item"是属于哪一个"system level item"(就是说属于的log级别)，只有在所属的"system level item"被按下后，才会显示出正确的"user level item"的内容。
 
 
 三、软件正常模式解析log文件使用说明:
     1.开启软件：
         移动到"loganalyser/src"目录下执行"sudo python3 gui.py"
-
+    
     2.加载log文件：
         1.菜单栏点击"File"，双击"load log file..."
     
