@@ -16,11 +16,12 @@ import tkinter.messagebox
 
 from logparser import *
 from quickViewLog_gui import *
+from quickViewAyla_gui import *
 from commonUtils import *
 from pmapParser import *
 
 
-VERSION = "0.1.5"
+VERSION = "0.1.6"
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
@@ -93,32 +94,37 @@ class Win:
         self.quickViewLog = QuickViewLog(self.logFilePath)
 
 
+    def quickViewAyla(self):
+        self.quickViewAyla = QuickViewAyla(self.logFilePath)
+
+
     def setupMenu(self):
         menuBar = Menu(self.win)
         self.win.config(menu = menuBar)
         fileMenu = Menu(menuBar)
 
         # 文件栏
-        menuBar.add_cascade(label = "File", menu = fileMenu, font = setFont(12))
-        fileMenu.add_command(label = "load log file...", command = lambda: self._parseFile("log"), font = setFont(12))
-        fileMenu.add_command(label = "load pmap file...", command = lambda: self._parseFile("pmap"), font = setFont(12))
-        fileMenu.add_command(label = "exit", command = self._quit, font = setFont(12))
+        menuBar.add_cascade(label = "文件", menu = fileMenu, font = setFont(12))
+        fileMenu.add_command(label = "打开log文件", command = lambda: self._parseFile("log"), font = setFont(12))
+        fileMenu.add_command(label = "打开pmap文件", command = lambda: self._parseFile("pmap"), font = setFont(12))
+        fileMenu.add_command(label = "退出", command = self._quit, font = setFont(12))
 
         # 语言栏
         languageMenu = Menu(menuBar)
-        menuBar.add_cascade(label = "Language", menu = languageMenu, font = setFont(12))
+        menuBar.add_cascade(label = "语言", menu = languageMenu, font = setFont(12))
         # 此处的command调用的函数应该可以用lambda代替lambda : (self.logLanguageIndex = 1)
-        languageMenu.add_command(label = "chinese", command = self._chineseLanguage, font = setFont(12))
+        languageMenu.add_command(label = "中文", command = self._chineseLanguage, font = setFont(12))
         languageMenu.add_command(label = "english", command = self._englishLanguage, font = setFont(12))
 
         # 视图栏
         viewMenu = Menu(menuBar)
-        menuBar.add_cascade(label = "View", menu = viewMenu, font = setFont(12))
-        viewMenu.add_command(label = "quick view log", command = self.quickViewLog, font = setFont(12))
+        menuBar.add_cascade(label = "快捷模式", menu = viewMenu, font = setFont(12))
+        viewMenu.add_command(label = "快速查看log信息", command = self.quickViewLog, font = setFont(12))
+        viewMenu.add_command(label = "快速查看Ayla指令", command = self.quickViewAyla, font = setFont(12))
 
 
     def setupCheckboxes(self):
-        lf_encheck= LabelFrame(self.win, text = "Items", width = 900, height = 10, font = setFont(12))
+        lf_encheck= LabelFrame(self.win, text = "搜索项", width = 900, height = 10, font = setFont(12))
         lf_encheck.pack(side=TOP, fill = X)
 
         self.win_checkbox = PanedWindow(lf_encheck, orient = VERTICAL)
@@ -127,13 +133,13 @@ class Win:
         # 系统级log
         self.systemLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
         self.win_checkbox.add(self.systemLevelLogWin_checkbox)
-        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox, text = "system level item: ", font = setFont(11))
+        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox, text = " 系统级: ", font = setFont(11))
         self.systemLevelLogWin_checkbox.add(systemLevelLogLabel)
 
         # 用户级log
         self.userLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
         self.win_checkbox.add(self.userLevelLogWin_checkbox)
-        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox, text = "  user level item  : ", font = setFont(11))
+        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox, text = " 用户级: ", font = setFont(11))
         self.userLevelLogWin_checkbox.add(userLevelLogLabel)
 
 
@@ -146,7 +152,7 @@ class Win:
 
     def setupStatus(self):
         ## setup status
-        lf_status = LabelFrame(self.win, text = "Filtered information", width = 900, height = 10, font = setFont(12))
+        lf_status = LabelFrame(self.win, text = "过滤后的信息", width = 900, height = 10, font = setFont(12))
         lf_status.pack(side = BOTTOM, fill = X)
         self.stlable = tk.scrolledtext.ScrolledText(lf_status, bg="grey", width = 98, height = 20)
         self.stlable.pack(side=BOTTOM, fill=X)

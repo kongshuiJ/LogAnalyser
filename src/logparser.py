@@ -31,12 +31,10 @@ RE_LISTS = []
 
 def printBuffromB64(base64Str):
     try:
-        print( base64Str )
         buf = base64Str.encode(encoding="utf-8")
         raw = base64.b64decode(base64Str)
         input = PbInput_pb2.PbInput()
         input.ParseFromString(raw)
-        print(input)
         return input
     except:
         return "Exception when parse base"
@@ -124,7 +122,6 @@ class LogItem:
     def generate(log):
         gp = re.match(LOG_CAT, log)
         if not gp:
-            print("ERROR:",log)
             return None
         else:
             s = LogItem()
