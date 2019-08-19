@@ -16,6 +16,8 @@ import json
 
 from commonUtils import *
 
+# yapf: disable
+
 # 系统级log
 SYSTEM_LOG_LEVEL = [
     ('[D]',                  '[D]'),
@@ -27,6 +29,8 @@ SYSTEM_LOG_LEVEL = [
 LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{2,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
 
 RE_LISTS = []
+
+# yapf: enable
 
 
 def printBuffromB64(base64Str):
@@ -78,21 +82,23 @@ def filterll(listraw, RELists, logLanguageIndex):
         logLanguageIndex = 1
 
     for catogory in RELists:
-        print("cat:: ",catogory )
+        print("cat:: ", catogory)
         for pat in RELists[catogory]:
             print(pat)
 
     for l in listraw:
         needprint = False
         for catogory in RELists:
-            flag = False;
+            flag = False
             for pat in RELists[catogory]:
                 mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
                     l.filteredInfo = pat[logLanguageIndex] % mg.groups()
                     # 如果pat[logLanguageIndex]只包含“%s”，说明没有过滤到正确信息，所以直接跳过
-                    if False == checkStrComposition(pat[logLanguageIndex].replace(" ", ""), ["s", "%"]):
+                    if False == checkStrComposition(
+                            pat[logLanguageIndex].replace(" ", ""),
+                        ["s", "%"]):
                         flag = True
                         break
 
@@ -106,17 +112,21 @@ def filterll(listraw, RELists, logLanguageIndex):
 
 class LogItem:
     def __init__(self):
-        self.lvl = ""           # log级别
-        self.category = ""      # log类别
-        self.time = float(0)
-        self.file = ""
-        self.line = int(0)
-        self.log = ""
-        self.filteredInfo = ""  # 正则表达式过滤得到的信息
-        self.filteredInfoDisplayFlag = False
+        # yapf: disable
+        self.lvl        = ""           # log级别
+        self.category   = ""      # log类别
+        self.time       = float(0)
+        self.file       = ""
+        self.line       = int(0)
+        self.log        = ""
+
+        self.filteredInfo               = ""  # 正则表达式过滤得到的信息
+        self.filteredInfoDisplayFlag    = False
+        # yapf: enable
 
     def __str__(self):
-        return '%s %s %f %s %d ::::: %s' % ( self.lvl, self.category, self.time, self.file, self.line, self.log )
+        return '%s %s %f %s %d ::::: %s' % (self.lvl, self.category, self.time,
+                                            self.file, self.line, self.log)
 
     @staticmethod
     def generate(log):
@@ -124,13 +134,15 @@ class LogItem:
         if not gp:
             return None
         else:
-            s = LogItem()
-            s.lvl = "[" + gp.group(1) + "]"
-            s.category = gp.group(2)
-            s.time = float(gp.group(3))
-            s.file = gp.group(4)
-            s.line = int(gp.group(5))
-            s.log = gp.group(6)
+            # yapf: disable
+            s           = LogItem()
+            s.lvl       = "[" + gp.group(1) + "]"
+            s.category  = gp.group(2)
+            s.time      = float(gp.group(3))
+            s.file      = gp.group(4)
+            s.line      = int(gp.group(5))
+            s.log       = gp.group(6)
+            # yapf: enable
             return s
 
 
@@ -147,7 +159,7 @@ def filter_category(listraw):
 def parseItemFile(filePath):
     global RE_LISTS
 
-    fileHandle = open(filePath, "r", encoding = "utf-8")
+    fileHandle = open(filePath, "r", encoding="utf-8")
     readFile = fileHandle.read()
     RE_LISTS = json.loads(readFile)
 
@@ -155,7 +167,7 @@ def parseItemFile(filePath):
 
 
 if __name__ == '__main__':
-    filePath="/home/bacon/logmain_log_file000.log"
+    filePath = "/home/bacon/logmain_log_file000.log"
     re_list = parseItemFile("test.json")
     #print(re_list)
     line, size, lists = loadLogFile(filePath)
@@ -165,7 +177,5 @@ if __name__ == '__main__':
         print(a)
     #printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
 
-
-    
     #print(line,size,len(lists))
     #printBuffromB64("MQ==")

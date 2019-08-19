@@ -1,8 +1,10 @@
 #!/usr/bin/python3
 
+# yapf: disable
+
 SFMList = ["整体分析", "状态分析", "错误分析", "语音分析", "按键分析"]
 
-stateDict = {'WAITING':'等待', 'CLEANING':'清扫', 'DOCKING':'回充', 'PAUSE':'暂停', 
+stateDict = {'WAITING':'等待', 'CLEANING':'清扫', 'DOCKING':'回充', 'PAUSE':'暂停',
              'ERROR':'错误', 'REMOTE':'遥控', 'SLEEPING':'睡眠', 'SPOTING':'定点清扫',
              'UPDATING':'升级', 'WIFI_CONFIG':'配置网络', 'CHARGING':'充电',
              'BATTERY_FULL':'充电满', 'CLEAN_ZONE':'划区清扫', 'FACTORY_TEST':'老化测试'}
@@ -32,14 +34,16 @@ errorDict = {'ERROR_INIT_WIFI':'Wifi初始化失败', 'ERROR_INIT_IMU':'IMU初�
              'ERROR_MAP_RELOC_FAILED':'重定位失败'}
 
 ctrDict = {'USR_CTR_UP':'前进', 'USR_CTR_DOWN':'后退','USR_CTR_LEFT':'左转','USR_CTR_RIGHT':'右转','USR_CTR_POWER_ON':'开机',
-	   'USR_CTR_POWER_OFF':'关机', 'USR_CTR_POWER_ONOFF':'开关机', 'USR_CTR_PAUSE':'暂停','USR_CTR_RESUME':'恢复',
-	   'USR_CTR_PAUSE_RESUME':'暂停恢复','USR_CTR_AUTO':'清扫','USR_CTR_STOP':'停止', 'USR_CTR_AUTO_STOP':'清扫停止', 
-	   'USR_CTR_SNAKE':'弓字型清扫','USR_CTR_ALONG_WALL':'沿墙','USR_CTR_DOCK':'回充','USR_CTR_WIFI_RESET':'配网',
+    'USR_CTR_POWER_OFF':'关机', 'USR_CTR_POWER_ONOFF':'开关机', 'USR_CTR_PAUSE':'暂停','USR_CTR_RESUME':'恢复',
+    'USR_CTR_PAUSE_RESUME':'暂停恢复','USR_CTR_AUTO':'清扫','USR_CTR_STOP':'停止', 'USR_CTR_AUTO_STOP':'清扫停止',
+    'USR_CTR_SNAKE':'弓字型清扫','USR_CTR_ALONG_WALL':'沿墙','USR_CTR_DOCK':'回充','USR_CTR_WIFI_RESET':'配网',
            'USR_CTR_MUTE':'静音模式', 'USR_CTR_GALE':'强力模式','USR_CTR_SET_SCHEDULE':'设置定时','USR_CTR_OTA':'升级指令',
-	   'USR_CTR_CLEAN_ZONE':'画区清扫','USR_CTR_REBOOT':'重启', 'USR_CTR_POWEROFF_IN_STATION':'充电桩上关机', 
-	   'USR_CTR_EN_TEST':'进入测试','USR_CTR_EX_TEST':'退出测试','USR_CTR_SLEEP':'休眠','USR_CTR_FACTORY_TEST':'跑机测试',
-	   'USR_CTR_BASE_DOCK':'精对准回充', 'USR_CTR_AED':'倒垃圾', 'USR_CTR_AGING_TEST':'老化测试','USR_CTR_RESET':'重置',
-	   'USR_CTR_CALI_IMU':'IMU校准'}
+    'USR_CTR_CLEAN_ZONE':'画区清扫','USR_CTR_REBOOT':'重启', 'USR_CTR_POWEROFF_IN_STATION':'充电桩上关机',
+    'USR_CTR_EN_TEST':'进入测试','USR_CTR_EX_TEST':'退出测试','USR_CTR_SLEEP':'休眠','USR_CTR_FACTORY_TEST':'跑机测试',
+    'USR_CTR_BASE_DOCK':'精对准回充', 'USR_CTR_AED':'倒垃圾', 'USR_CTR_AGING_TEST':'老化测试','USR_CTR_RESET':'重置',
+    'USR_CTR_CALI_IMU':'IMU校准'}
+
+# yapf: enable
 
 
 # 设置字体大小

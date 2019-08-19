@@ -1,1 +1,1 @@
-__all__ = ["gui","logparser"]
+__all__ = ["gui", "logparser"]

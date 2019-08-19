@@ -7,8 +7,8 @@ import binascii
 import re
 import json
 
-sys.path.append(sys.path[0]+"/..")
-sys.path.append(sys.path[0]+"/../protobuf_release/py")
+sys.path.append(sys.path[0] + "/..")
+sys.path.append(sys.path[0] + "/../protobuf_release/py")
 
 import PbInput_pb2
 import PbOutput_pb2
@@ -20,9 +20,9 @@ from commonUtils import *
 
 def tryPrintMap(filename):
     f = open(filename, 'rb')
-    if f :
+    if f:
         bs = f.read()
-        print("reading file:" + filename +" len: " + str(len(bs)))
+        print("reading file:" + filename + " len: " + str(len(bs)))
         try:
             out = PbMap_pb2.PbFloor()
             out.ParseFromString(bs)
@@ -65,25 +65,24 @@ def tryPrintMap(filename):
                 print(len(bs2))
                 out = PbOutput_pb2.PbOutput()
                 out.ParseFromString(bs2)
-                rawfile = open("pbmapraw.pb",'wb')
-                rawfile.write(bs2,len(bs2))
+                rawfile = open("pbmapraw.pb", 'wb')
+                rawfile.write(bs2, len(bs2))
                 rawfile.close()
-            
+
             print("file type is QGlobalMap:")
             print(out)
             return
         except:
             print("try  QGlobalMap Failed")
 
-    else :
+    else:
         print("cannot open file " + filename)
 
 
-
 if __name__ == '__main__':
-    if len(argv) == 2 :
-        filePath=argv[1]
+    if len(argv) == 2:
+        filePath = argv[1]
         tryPrintMap(filePath)
 
-    else :
+    else:
         print("need file name ")
