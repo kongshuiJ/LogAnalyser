@@ -22,7 +22,7 @@ from pmapParser import *
 
 # yapf: disable
 
-VERSION = "0.1.6"
+VERSION = "0.1.7"
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
@@ -45,13 +45,14 @@ class Win:
         self.logListbox     = None
         self.logScrollbar   = None
 
+        self.label_logFilePath          = StringVar()
         self.userLevelLogList           = []
         self.list_checkboxes            = None
         self.userLevelLogWin_checkbox   = None
 
         self.setupWindow()
 
-        self.logLanguageIndex           = 1    # 1: chinese    2:english 对应json文件
+        self.logLanguageIndex           = 2    # 1: chinese    2:english 对应json文件
         self.quickViewLogToplevel       = None
         self.systemLevelLogWin_checkbox = None
         # yapf: enable
@@ -116,18 +117,22 @@ class Win:
         fileMenu = Menu(menuBar)
 
         # 文件栏
-        menuBar.add_cascade(label="文件", menu=fileMenu, font=setFont(12))
-        fileMenu.add_command(label="打开log文件",
+        menuBar.add_cascade(label="files", menu=fileMenu, font=setFont(12))
+        fileMenu.add_command(label="open log file",
                              command=lambda: self._parseFile("log"),
                              font=setFont(12))
-        fileMenu.add_command(label="打开pmap文件",
+        fileMenu.add_command(label="open pmap file",
                              command=lambda: self._parseFile("pmap"),
                              font=setFont(12))
-        fileMenu.add_command(label="退出", command=self._quit, font=setFont(12))
+        fileMenu.add_command(label="exit",
+                             command=self._quit,
+                             font=setFont(12))
 
         # 语言栏
         languageMenu = Menu(menuBar)
-        menuBar.add_cascade(label="语言", menu=languageMenu, font=setFont(12))
+        menuBar.add_cascade(label="language",
+                            menu=languageMenu,
+                            font=setFont(12))
         # 此处的command调用的函数应该可以用lambda代替lambda : (self.logLanguageIndex = 1)
         languageMenu.add_command(label="中文",
                                  command=self._chineseLanguage,
@@ -138,17 +143,22 @@ class Win:
 
         # 视图栏
         viewMenu = Menu(menuBar)
-        menuBar.add_cascade(label="快捷模式", menu=viewMenu, font=setFont(12))
-        viewMenu.add_command(label="快速查看log信息",
+        menuBar.add_cascade(label="quick view",
+                            menu=viewMenu,
+                            font=setFont(12))
+        viewMenu.add_command(label="log file",
                              command=self.quickViewLog,
                              font=setFont(12))
-        viewMenu.add_command(label="快速查看Ayla指令",
+        viewMenu.add_command(label="Ayla instruction",
                              command=self.quickViewAyla,
                              font=setFont(12))
 
     def setupCheckboxes(self):
+        global RE_LISTS
+        global SYSTEM_LOG_LEVEL
+
         lf_encheck = LabelFrame(self.win,
-                                text="搜索项",
+                                text="Search term",
                                 width=900,
                                 height=10,
                                 font=setFont(12))
@@ -158,27 +168,29 @@ class Win:
         self.win_checkbox.pack(fill=X)
 
         # 系统级log
-        self.systemLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
-        self.win_checkbox.add(self.systemLevelLogWin_checkbox)
-        systemLevelLogLabel = tk.Label(self.systemLevelLogWin_checkbox,
-                                       text=" 系统级: ",
-                                       font=setFont(11))
-        self.systemLevelLogWin_checkbox.add(systemLevelLogLabel)
+        systemLevelLogLabel = tk.Label(self.win_checkbox,
+                                       text=" system level: ",
+                                       font=setFont(11)).grid(row=7)
+        for index, logLevel in enumerate(SYSTEM_LOG_LEVEL):
+            self.addSystemLevelCheckbox(
+                index, logLevel[1],
+                (lambda x: lambda: self.systemLevelLog(x))(logLevel[1]))
 
         # 用户级log
-        self.userLevelLogWin_checkbox = PanedWindow(self.win_checkbox)
-        self.win_checkbox.add(self.userLevelLogWin_checkbox)
-        userLevelLogLabel = tk.Label(self.userLevelLogWin_checkbox,
-                                     text=" 用户级: ",
-                                     font=setFont(11))
-        self.userLevelLogWin_checkbox.add(userLevelLogLabel)
+        userLevelLogLabel = tk.Label(self.win_checkbox,
+                                     text="   user level:   ",
+                                     font=setFont(11)).grid(row=9)
+        for index, itemName in enumerate(RE_LISTS):
+            self.addUserLevelCheckbox(
+                index, itemName,
+                (lambda x: lambda: self.userLevelLog(x))(itemName))
 
     def setupScrollbar(self):
         self.logScrollbar = Scrollbar(self.win)
         self.logScrollbar.pack(side=RIGHT, fill=Y)
         self.logListbox = Listbox(self.win,
                                   width=500,
-                                  height=35,
+                                  height=45,
                                   yscrollcommand=self.logScrollbar.set,
                                   font=setFont(11))
         self.logScrollbar.config(command=self.logListbox.yview)
@@ -186,7 +198,7 @@ class Win:
     def setupStatus(self):
         ## setup status
         lf_status = LabelFrame(self.win,
-                               text="过滤后的信息",
+                               text="Filtered information",
                                width=900,
                                height=10,
                                font=setFont(12))
@@ -194,7 +206,7 @@ class Win:
         self.stlable = tk.scrolledtext.ScrolledText(lf_status,
                                                     bg="grey",
                                                     width=98,
-                                                    height=20)
+                                                    height=15)
         self.stlable.pack(side=BOTTOM, fill=X)
 
     def setupB64Entry(self):
@@ -217,11 +229,17 @@ class Win:
         self.win.resizable(True, True)
         self.win.geometry('900x900')
         self.setupMenu()
+
+        # Label窗口显示文件名
+        self.label_logFilePath.set("No files are currently open")
+        tk.Label(self.win,
+                 textvariable=self.label_logFilePath,
+                 font=setFont(12)).pack()
+
         # setup workspace
         ## setup checkbox
         self.setupCheckboxes()
         self.setupScrollbar()
-        self.setupCheckButton()
         self.setupStatus()
         self.setupB64Entry()
 
@@ -229,30 +247,27 @@ class Win:
         print("male: %d,\nfemale: %d" % (11, 33))
 
     # 添加用户级log的按钮
-    def addUserLevelCheckbox(self, name, callback):
-        cb_items = Checkbutton(self.userLevelLogWin_checkbox,
+    def addUserLevelCheckbox(self, index, name, callback):
+        cb_items = Checkbutton(self.win_checkbox,
                                text=name,
-                               bg='grey',
                                command=callback,
-                               width=10,
+                               width=15,
                                height=1,
                                indicatoron=False)
-        self.userLevelLogWin_checkbox.add(cb_items, sticky="w")
+        cb_items.grid(row=10, column=index)
 
     # 添加系统级log的按钮,默认勾选
-    def addSystemLevelCheckbox(self, name, callback):
+    def addSystemLevelCheckbox(self, index, name, callback):
         global systemLevelLogDict
         systemLevelLogDict[name] = True
-        cb_items = Checkbutton(self.systemLevelLogWin_checkbox,
+        cb_items = Checkbutton(self.win_checkbox,
                                text=name,
-                               bg='grey',
                                command=callback,
-                               width=10,
+                               width=15,
                                height=1,
                                indicatoron=False)
-        self.systemLevelLogWin_checkbox.add(cb_items, sticky="w")
-
         cb_items.select()
+        cb_items.grid(row=8, column=index)
 
     # 刷新文本框，全部重新输出
     def refreshTextInfo(self, ):
@@ -294,21 +309,6 @@ class Win:
 
         self.refreshTextInfo()
 
-    def setupCheckButton(self, ):
-        global RE_LISTS
-        global SYSTEM_LOG_LEVEL
-
-        for logLevel in SYSTEM_LOG_LEVEL:
-            self.addSystemLevelCheckbox(
-                logLevel[1],
-                (lambda x: lambda: self.systemLevelLog(x))(logLevel[1]))
-
-        for itemName in RE_LISTS:
-            self.addUserLevelCheckbox(
-                itemName, (lambda x: lambda: self.userLevelLog(x))(itemName))
-
-        self.refreshTextInfo()
-
     def clean_checkbox(self):
         cb_items = Checkbutton(systemLevelLogWin_checkbox,
                                text="name",
@@ -319,7 +319,16 @@ class Win:
         exit(0)
 
     def _parseFile(self, fileType):
-        filePath = ""
+        # 当前版本只支持打开一个log文件，如果想重新查看新的log文件，需要关闭工具重新打开
+        if 0 < len(self.logFilePath):
+            tk.messagebox.showinfo(
+                title='Switching files is not supported',
+                message=
+                "Once the current version opens a file, you can't switch. We will improve this feature as soon as possible, sorry."
+            )
+            return
+
+        filePath = None
         if "log" == fileType:
             filePath = tk.filedialog.askopenfilename(
                 filetypes=[("logtype", ("*.log", "*.last")), ("all", "*.*")])
@@ -328,6 +337,10 @@ class Win:
             filePath = tk.filedialog.askopenfilename(
                 filetypes=[("pmaptype", ("*.pmap")), ("all", "*.*")])
             self.pmapFilePath = filePath
+
+        # 没有选择文件就直接关掉窗口
+        if isinstance(filePath, tuple):
+            return
 
         if os.path.exists(filePath):
             print("open file", filePath)
@@ -344,6 +357,8 @@ class Win:
                     self.stlable.insert('end', mapObject)
                     self.stlable.insert('end', "\n")
 
+            # label窗口显示当前打开的文件名
+            self.label_logFilePath.set(filePath)
         else:
             print("file not exist!", self.logFilePath)
             self.logFilePath = ""

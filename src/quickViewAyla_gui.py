@@ -35,6 +35,7 @@ class QuickViewAyla:
         self.stlable.delete(1.0, END)
         for line in f.readlines():
             # 将每行Ayla:[]包含的指令获取到
+            line = line[len('1453366216 INFO QF : '):]
             line = line.strip()
             AylaStr = "Ayla:["
             start = line.find(AylaStr)
@@ -49,10 +50,10 @@ class QuickViewAyla:
                     time = float(gp.group(3))
 
                 base64Str = line[start + len(AylaStr):end]
-                self.stlable.insert('end', "时间: %.3fs\n" % time)
-                self.stlable.insert('end', "密文:\n")
+                self.stlable.insert('end', "time: %.3fs\n" % time)
+                self.stlable.insert('end', "encode:\n")
                 self.stlable.insert('end', "    %s\n" % base64Str)
-                self.stlable.insert('end', "译文:\n    ")
+                self.stlable.insert('end', "dencode:\n    ")
                 self.stlable.insert('end',
                                     logparser.printBuffromB64(base64Str))
                 self.stlable.insert('end',
@@ -61,7 +62,7 @@ class QuickViewAyla:
 
     def setupWindow(self):
         self.quickViewWin = tk.Tk()
-        self.quickViewWin.title("quick view log")
+        self.quickViewWin.title("quick view log: %s" % self.logFilePath)
         self.quickViewWin.resizable(True, True)
         self.quickViewWin.geometry('700x700')
 

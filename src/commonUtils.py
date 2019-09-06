@@ -2,12 +2,17 @@
 
 # yapf: disable
 
-SFMList = ["整体分析", "状态分析", "错误分析", "语音分析", "按键分析"]
+SFMList = ["Overall analysis(整体分析)",
+        "State analysis(状态分析)",
+        "Error analysis(错误分析)",
+        "Audio analysis(语音分析)",
+        "Button analysis(按键分析)"]
 
 stateDict = {
     'WAITING':      '等待',
     'CLEANING':     '清扫',
     'DOCKING':      '回充',
+    'BASEDOCKING':  '精对准',
     'PAUSE':        '暂停',
     'ERROR':        '错误',
     'REMOTE':       '遥控',
@@ -161,3 +166,13 @@ def checkStrComposition(checkedStr, letterList):
             return False
 
     return True
+
+
+#设置窗口居中
+def windowInfo(window):
+    ws = window.winfo_screenwidth()
+    hs = window.winfo_screenheight()
+    x = (ws / 2) - 200
+    y = (hs / 2) - 200
+    print("%d, %d" % (ws, hs))
+    return x, y

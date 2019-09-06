@@ -46,13 +46,12 @@ class QuickViewLog:
     def signalLOGAnalysis(self):
         f = open(self.logFilePath, "r", encoding="utf-8")
         for line in f.readlines():
+            line = line[len('1453366216 INFO QF : '):]
             line = line.strip()
             if "STATE:: == EN ==>" in line:
                 line = re.sub(u"([^\u0030-\u0039 . \u0041-\u005a])", "", line)
-                spl = [
-                    stateDict[x] if x in stateDict else x
-                    for x in line.split()
-                ]
+                spl = [(x + "(%s)" % stateDict[x]) if x in stateDict else x
+                       for x in line.split()]
                 temp = ("%-15s" + spl[5]) % spl[1]
                 self.stateResult.append(temp)
                 self.result.append(temp)
@@ -60,10 +59,8 @@ class QuickViewLog:
             elif "ERROR_" in line:
                 line = re.sub(u"([^\u0030-\u0039 . _ \u0041-\u005a])", "",
                               line)
-                spl = [
-                    errorDict[x] if x in errorDict else x
-                    for x in line.split()
-                ]
+                spl = [(x + "(%s)" % errorDict[x]) if x in errorDict else x
+                       for x in line.split()]
                 temp = ("%-15s" + spl[5]) % spl[1]
                 self.errorResult.append(temp)
                 self.result.append(temp)
@@ -79,7 +76,8 @@ class QuickViewLog:
             elif "USR_CTR" in line:
                 line = re.sub(u"([^\u0030-\u0039 . _ \u0041-\u005a])", "",
                               line)
-                spl = [ctrDict[x] if x in ctrDict else x for x in line.split()]
+                spl = [(x + "(%s)" % ctrDict[x]) if x in ctrDict else x
+                       for x in line.split()]
                 temp = ("%-15s" + spl[4]) % spl[1]
                 self.ctrResult.append(temp)
                 self.result.append(temp)
@@ -121,7 +119,7 @@ class QuickViewLog:
 
     def setupWindow(self):
         self.quickViewWin = tk.Tk()
-        self.quickViewWin.title("quick view log")
+        self.quickViewWin.title("quick view log: %s" % self.logFilePath)
         self.quickViewWin.resizable(True, True)
         self.quickViewWin.geometry('700x700')
 
@@ -139,28 +137,28 @@ class QuickViewLog:
         self.menubar = Menu(self.quickViewWin)
         self.quickViewWin.config(menu=self.menubar)
         self.sfmMenu = Menu(self.menubar)
-        self.menubar.add_cascade(label="状态机分析",
+        self.menubar.add_cascade(label="Analysis by module(按模块分析)",
                                  menu=self.sfmMenu,
                                  font=setFont(12))
 
         for item in SFMList:
-            if item == "整体分析":
+            if item == "Overall analysis(整体分析)":
                 self.sfmMenu.add_command(label=item,
                                          command=self.SFMAnalysis,
                                          font=setFont(12))
-            elif item == "状态分析":
+            elif item == "State analysis(状态分析)":
                 self.sfmMenu.add_command(label=item,
                                          command=self.SFMStateAnalysis,
                                          font=setFont(12))
-            elif item == "错误分析":
+            elif item == "Error analysis(错误分析)":
                 self.sfmMenu.add_command(label=item,
                                          command=self.SFMErrorAnalysis,
                                          font=setFont(12))
-            elif item == "语音分析":
+            elif item == "Audio analysis(语音分析)":
                 self.sfmMenu.add_command(label=item,
                                          command=self.SFMAudioAnalysis,
                                          font=setFont(12))
-            elif item == "按键分析":
+            elif item == "Button analysis(按键分析)":
                 self.sfmMenu.add_command(label=item,
                                          command=self.SFMCtrAnalysis,
                                          font=setFont(12))

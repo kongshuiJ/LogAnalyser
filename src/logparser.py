@@ -55,6 +55,7 @@ def loadLogFile(filename):
         filesize = os.path.getsize(filename)
 
         for line in f:
+            line = line[len('1453366216 INFO QF : '):]
             tmpline = line.replace('\n', '')
             isLvl = False
             for re in SYSTEM_LOG_LEVEL:
