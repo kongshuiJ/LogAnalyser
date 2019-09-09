@@ -6,7 +6,7 @@ import tkinter.messagebox
 import re
 
 import logparser
-LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{1,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
+LOG_CAT = r'^.*\[([DIEW])\](\S*)[ ]{1,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
 
 
 class QuickViewAyla:
@@ -35,7 +35,6 @@ class QuickViewAyla:
         self.stlable.delete(1.0, END)
         for line in f.readlines():
             # 将每行Ayla:[]包含的指令获取到
-            line = line[len('1453366216 INFO QF : '):]
             line = line.strip()
             AylaStr = "Ayla:["
             start = line.find(AylaStr)

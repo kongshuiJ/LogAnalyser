@@ -20,13 +20,13 @@ from commonUtils import *
 
 # 系统级log
 SYSTEM_LOG_LEVEL = [
-    ('[D]',                  '[D]'),
-    ('[I]',                  '[I]'),
-    ("[\033[1;31mE\033[0m]", '[E]'),
-    ("[\033[1;33mW\033[0m]", '[W]'),
+    ('[D]',                     '[D]'),
+    ('[I]',                     '[I]'),
+    ("[\033[1;31mE\033[0m]",    '[E]'),
+    ("[\033[1;33mW\033[0m]",    '[W]'),
 ]
 
-LOG_CAT = r'^\[([DIEW])\](\S*)[ ]{2,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
+LOG_CAT = r'^.*\[([DIEW])\](\S*)[ ]{1,6}([0-9\.]*)[\s]+([\S]*):([0-9]*)[\s]*\| (.*)$'
 
 RE_LISTS = []
 
@@ -48,14 +48,13 @@ def loadLogFile(filename):
     linecnt = 0
     filesize = 0
     loglist = []
-    f = None
+    fileHandle = None
     last_line = None
     try:
-        f = open(filename)
+        fileHandle = open(filename)
         filesize = os.path.getsize(filename)
 
-        for line in f:
-            line = line[len('1453366216 INFO QF : '):]
+        for line in fileHandle:
             tmpline = line.replace('\n', '')
             isLvl = False
             for re in SYSTEM_LOG_LEVEL:
@@ -72,6 +71,10 @@ def loadLogFile(filename):
             loglist.append(last_line)
     except:
         print("error got ")
+
+    if None != fileHandle:
+        fileHandle.close()
+
     return linecnt, filesize, loglist
 
 
@@ -82,10 +85,11 @@ def filterll(listraw, RELists, logLanguageIndex):
     if 1 != logLanguageIndex and 2 != logLanguageIndex:
         logLanguageIndex = 1
 
-    for catogory in RELists:
-        print("cat:: ", catogory)
-        for pat in RELists[catogory]:
-            print(pat)
+    # 打印test.json文件
+    # for catogory in RELists:
+    #     print("cat:: ", catogory)
+    #     for pat in RELists[catogory]:
+    #         print(pat)
 
     for l in listraw:
         needprint = False
@@ -95,7 +99,7 @@ def filterll(listraw, RELists, logLanguageIndex):
                 mg = re.match(eval(pat[0]), l.log)
                 if mg:
                     needprint = True
-                    l.filteredInfo = pat[logLanguageIndex] % mg.groups()
+                    l.filteredInfo = pat[logLanguageIndex] % (mg.groups())
                     # 如果pat[logLanguageIndex]只包含“%s”，说明没有过滤到正确信息，所以直接跳过
                     if False == checkStrComposition(
                             pat[logLanguageIndex].replace(" ", ""),
@@ -114,8 +118,8 @@ def filterll(listraw, RELists, logLanguageIndex):
 class LogItem:
     def __init__(self):
         # yapf: disable
-        self.lvl        = ""           # log级别
-        self.category   = ""      # log类别
+        self.lvl        = ""            # log级别
+        self.category   = ""            # log类别
         self.time       = float(0)
         self.file       = ""
         self.line       = int(0)
@@ -156,7 +160,7 @@ def filter_category(listraw):
 
     return itemlist
 
-
+# 解析json文件
 def parseItemFile(filePath):
     global RE_LISTS
 
@@ -164,18 +168,19 @@ def parseItemFile(filePath):
     readFile = fileHandle.read()
     RE_LISTS = json.loads(readFile)
 
+    if None != fileHandle:
+        fileHandle.close()
+
     return RE_LISTS
 
 
 if __name__ == '__main__':
-    filePath = "/home/bacon/logmain_log_file000.log"
+    filePath = "logmain_log_file000.log"
     re_list = parseItemFile("test.json")
     #print(re_list)
     line, size, lists = loadLogFile(filePath)
     itlist = filter_category(lists)
-    aa = filterll(itlist, RE_LISTS)
-    for a in aa:
-        print(a)
+    aa = filterll(itlist, RE_LISTS, 1)
     #printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
 
     #print(line,size,len(lists))

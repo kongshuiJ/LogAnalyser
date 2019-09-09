@@ -22,7 +22,7 @@ from pmapParser import *
 
 # yapf: disable
 
-VERSION = "0.1.7"
+VERSION = "0.1.8"
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
@@ -319,14 +319,15 @@ class Win:
         exit(0)
 
     def _parseFile(self, fileType):
-        # 当前版本只支持打开一个log文件，如果想重新查看新的log文件，需要关闭工具重新打开
+        # 一旦选择新开一个文件，之前的解析的文件内容全部清空
         if 0 < len(self.logFilePath):
-            tk.messagebox.showinfo(
-                title='Switching files is not supported',
-                message=
-                "Once the current version opens a file, you can't switch. We will improve this feature as soon as possible, sorry."
-            )
-            return
+            # yapf: disable
+            self.logFilePath        = ""
+            self.pmapFilePath       = ""
+            self.logList            = []
+            self.userLevelLogList   = []
+            self.label_logFilePath.set("No files are currently open")
+            # yapf: enable
 
         filePath = None
         if "log" == fileType:

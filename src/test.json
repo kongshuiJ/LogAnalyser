@@ -1,17 +1,45 @@
 {
-    "ALL": [
-        [ "r'(.*)'", "%s " , "%s" ]
+    "all": [
+        [ "r'(.*)'", "%s ", "%s" ]
     ],
 
-    "USR_CONTROL": [
+    "usr_control": [
+        [ "r'.*(USR_CTR_\\S*).*'", "用户信号: %s", "User Signal: %s" ]
+    ],
+
+    "state": [
         [ "r'.*STATE::\\s==\\sEN\\s==>\\s(\\S*).*'", "进入状态: %s " , "Enter: %s" ],
-        [ "r'.*STATE::\\s<==\\sEX\\s==\\s(\\S*).*'", "退出状态: %s " , "Exit : %s" ],
-        [ "r'.*USR_CTR_(\\S*).*'", "用户信号: %s" , "User Signal: %s" ],
-        [ "r'.*AUDIO_(\\S*).*'", "语言播放: %s", "Voice playback: %s" ]
+        [ "r'.*STATE::\\s<==\\sEX\\s==\\s(\\S*).*'", "退出状态: %s " , "Exit : %s" ]
     ],
 
-    "PERSISTMAP": [
-        [ "r'.*Report.*\\s'" , "日志信息: %s "   , "Report: %s" ],
-        [ "r'.*(>>>.*)'"     , "地图判断: %s "    , "MapEvaluate: %s" ]
+    "error": [
+        [ "r'.*ERROR\\sCODE::==>\\s(.*)'",  "错误代码: %s",     "Error code: %s" ],
+        [ "r'.*ERROR:\\s(.*)'",             "VT错误信息: %s",   "VT error: %s" ]
+    ],
+
+    "audio": [
+        [ "r'.*(AUDIO_\\S*).*'",    "语言播放: %s", "AUDIO: %s" ]
+    ],
+ 
+    "battery":[
+        [ "r'.*BAT.:\\s*([0-9][0-9])<==.*'",    "电量显示: %s", "battery: %s" ]
+    ],
+
+    "persist_map": [
+        [ "r'.*Report\\s(\\S.*)'",  "日志信息: %s ",    "Report: %s" ],
+        [ "r'.*(>>>.*)'",           "地图判断: %s ",    "MapEvaluate: %s" ]
+    ],
+
+    "ER&RR": [
+        [ "r'.*ER&RR:\\s*(.*)'",   "ER&RR 信息: %s ",    "ER&RR info: %s " ]
+    ],
+
+    "PP(CleanState)": [
+        [ "r'.*(Start path planning)'",   "清洁开始: %s ",    "Cleaning start: %s " ],
+        [ "r'.*(Stop path planning!)'",    "清洁停止: %s ",    "Cleaning stop: %s " ],
+        [ "r'.*(Pause!)'",                 "清洁暂停: %s ",    "Cleaning pause: %s " ],
+        [ "r'.*(Resume!)'",                "清洁继续: %s ",    "Cleaning continues: %s " ],
+        [ "r'.*(Cleaning is stopped by external!)'",   "外部停止: %s ",    "external stop: %s " ]
     ]
+
 }
