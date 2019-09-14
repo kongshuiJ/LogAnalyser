@@ -14,11 +14,11 @@ import tkinter.filedialog
 import tkinter.scrolledtext
 import tkinter.messagebox
 
-from logparser import *
-from quickViewLog_gui import *
-from quickViewAyla_gui import *
-from commonUtils import *
-from pmapParser import *
+import logparser
+import quickViewLog_gui
+import quickViewAyla_gui
+import commonUtils
+import pmapParser
 
 # yapf: disable
 
@@ -37,7 +37,7 @@ class Win:
         self.win            = tk.Tk()
         self.stlable        = None
         self.win_checkbox   = None
-        self.font           = setFont(12)
+        self.font           = commonUtils.setFont(12)
         self.logFilePath    = ""
         self.pmapFilePath   = ""
         self.logList        = []
@@ -95,21 +95,21 @@ class Win:
         self.logLanguageIndex = 1
         if 0 != len(self.userLevelLogList):
             self.userLevelLogList.clear()
-            self.userLevelLogList = filterll(self.logList, RE_LISTS,
+            self.userLevelLogList = logparser.filterll(self.logList, RE_LISTS,
                                              self.logLanguageIndex)
 
     def _englishLanguage(self):
         self.logLanguageIndex = 2
         if 0 != len(self.userLevelLogList):
             self.userLevelLogList.clear()
-            self.userLevelLogList = filterll(self.logList, RE_LISTS,
+            self.userLevelLogList = logparser.filterll(self.logList, RE_LISTS,
                                              self.logLanguageIndex)
 
     def quickViewLog(self):
-        self.quickViewLog = QuickViewLog(self.logFilePath)
+        self.quickViewLog = quickViewLog_gui.QuickViewLog(self.logFilePath)
 
     def quickViewAyla(self):
-        self.quickViewAyla = QuickViewAyla(self.logFilePath)
+        self.quickViewAyla = quickViewAyla_gui.QuickViewAyla(self.logFilePath)
 
     def setupMenu(self):
         menuBar = Menu(self.win)
@@ -117,51 +117,50 @@ class Win:
         fileMenu = Menu(menuBar)
 
         # 文件栏
-        menuBar.add_cascade(label="files", menu=fileMenu, font=setFont(12))
+        menuBar.add_cascade(label="files", menu=fileMenu, font=commonUtils.setFont(12))
         fileMenu.add_command(label="open log file",
                              command=lambda: self._parseFile("log"),
-                             font=setFont(12))
+                             font=commonUtils.setFont(12))
         fileMenu.add_command(label="open pmap file",
                              command=lambda: self._parseFile("pmap"),
-                             font=setFont(12))
+                             font=commonUtils.setFont(12))
         fileMenu.add_command(label="exit",
                              command=self._quit,
-                             font=setFont(12))
+                             font=commonUtils.setFont(12))
 
         # 语言栏
         languageMenu = Menu(menuBar)
         menuBar.add_cascade(label="language",
                             menu=languageMenu,
-                            font=setFont(12))
+                            font=commonUtils.setFont(12))
         # 此处的command调用的函数应该可以用lambda代替lambda : (self.logLanguageIndex = 1)
         languageMenu.add_command(label="中文",
                                  command=self._chineseLanguage,
-                                 font=setFont(12))
+                                 font=commonUtils.setFont(12))
         languageMenu.add_command(label="english",
                                  command=self._englishLanguage,
-                                 font=setFont(12))
+                                 font=commonUtils.setFont(12))
 
         # 视图栏
         viewMenu = Menu(menuBar)
         menuBar.add_cascade(label="quick view",
                             menu=viewMenu,
-                            font=setFont(12))
+                            font=commonUtils.setFont(12))
         viewMenu.add_command(label="log file",
                              command=self.quickViewLog,
-                             font=setFont(12))
+                             font=commonUtils.setFont(12))
         viewMenu.add_command(label="Ayla instruction",
                              command=self.quickViewAyla,
-                             font=setFont(12))
+                             font=commonUtils.setFont(12))
 
     def setupCheckboxes(self):
         global RE_LISTS
-        global SYSTEM_LOG_LEVEL
 
         lf_encheck = LabelFrame(self.win,
                                 text="Search term",
                                 width=900,
                                 height=10,
-                                font=setFont(12))
+                                font=commonUtils.setFont(12))
         lf_encheck.pack(side=TOP, fill=X)
 
         self.win_checkbox = PanedWindow(lf_encheck, orient=VERTICAL)
@@ -170,8 +169,8 @@ class Win:
         # 系统级log
         systemLevelLogLabel = tk.Label(self.win_checkbox,
                                        text=" system level: ",
-                                       font=setFont(11)).grid(row=7)
-        for index, logLevel in enumerate(SYSTEM_LOG_LEVEL):
+                                       font=commonUtils.setFont(11)).grid(row=7)
+        for index, logLevel in enumerate(logparser.SYSTEM_LOG_LEVEL):
             self.addSystemLevelCheckbox(
                 index, logLevel[1],
                 (lambda x: lambda: self.systemLevelLog(x))(logLevel[1]))
@@ -179,7 +178,7 @@ class Win:
         # 用户级log
         userLevelLogLabel = tk.Label(self.win_checkbox,
                                      text="   user level:   ",
-                                     font=setFont(11)).grid(row=9)
+                                     font=commonUtils.setFont(11)).grid(row=9)
         for index, itemName in enumerate(RE_LISTS):
             self.addUserLevelCheckbox(
                 index, itemName,
@@ -192,7 +191,7 @@ class Win:
                                   width=500,
                                   height=45,
                                   yscrollcommand=self.logScrollbar.set,
-                                  font=setFont(11))
+                                  font=commonUtils.setFont(11))
         self.logScrollbar.config(command=self.logListbox.yview)
 
     def setupStatus(self):
@@ -201,7 +200,7 @@ class Win:
                                text="Filtered information",
                                width=900,
                                height=10,
-                               font=setFont(12))
+                               font=commonUtils.setFont(12))
         lf_status.pack(side=BOTTOM, fill=X)
         self.stlable = tk.scrolledtext.ScrolledText(lf_status,
                                                     bg="grey",
@@ -219,7 +218,7 @@ class Win:
                               text="base64",
                               width=98,
                               height=10,
-                              font=setFont(12))
+                              font=commonUtils.setFont(12))
         lf_enbox.pack(side=BOTTOM, fill=X)
         enbox = Entry(lf_enbox, width=98, textvariable=self.b64str)
         enbox.pack(fill=X)
@@ -234,7 +233,7 @@ class Win:
         self.label_logFilePath.set("No files are currently open")
         tk.Label(self.win,
                  textvariable=self.label_logFilePath,
-                 font=setFont(12)).pack()
+                 font=commonUtils.setFont(12)).pack()
 
         # setup workspace
         ## setup checkbox
@@ -296,7 +295,7 @@ class Win:
     # 用户级log json文件内正则表达式过滤出来的信息
     def userLevelLog(self, name):
         if 0 == len(self.userLevelLogList):
-            self.userLevelLogList = filterll(self.logList, RE_LISTS,
+            self.userLevelLogList = logparser.filterll(self.logList, RE_LISTS,
                                              self.logLanguageIndex)
 
         for listContent in self.logList:
@@ -348,12 +347,12 @@ class Win:
 
             if "log" == fileType:
                 # 确定打开文件后,对log文件进行解析
-                fileLine, fileSize, logList = loadLogFile(filePath)
-                self.logList = filter_category(logList)
+                fileLine, fileSize, logList = logparser.loadLogFile(filePath)
+                self.logList = logparser.filter_category(logList)
                 self.refreshTextInfo()
             elif "pmap" == fileType:
                 # 确定打开文件后,对pmap文件进行解析
-                mapObjectType, mapObject = getMapObject(filePath)
+                mapObjectType, mapObject = pmapParser.getMapObject(filePath)
                 if "" != mapObjectType:
                     self.stlable.insert('end', mapObject)
                     self.stlable.insert('end', "\n")
@@ -367,7 +366,7 @@ class Win:
 
 if __name__ == '__main__':
 
-    RE_LISTS = parseItemFile("test.json")
+    RE_LISTS = logparser.parseItemFile("test.json")
 
     win_ = Win()
 
