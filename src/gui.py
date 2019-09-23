@@ -105,12 +105,15 @@ class Win:
             self.userLevelLogList = logparser.filterll(self.logList, RE_LISTS,
                                              self.logLanguageIndex)
 
+    # 快捷分析log模式
     def quickViewLog(self):
         self.quickViewLog = quickViewLog_gui.QuickViewLog(self.logFilePath)
 
+    # 分析Ayla指令模式
     def quickViewAyla(self):
         self.quickViewAyla = quickViewAyla_gui.QuickViewAyla(self.logFilePath)
 
+    # 设置菜单栏
     def setupMenu(self):
         menuBar = Menu(self.win)
         self.win.config(menu=menuBar)
@@ -247,13 +250,20 @@ class Win:
 
     # 添加用户级log的按钮
     def addUserLevelCheckbox(self, index, name, callback):
+        curRow = 10
+
+        # 用户级log每10个为一行
+        if 9 < index:
+            curRow = 12
+            index = index - 10
+
         cb_items = Checkbutton(self.win_checkbox,
                                text=name,
                                command=callback,
                                width=15,
                                height=1,
                                indicatoron=False)
-        cb_items.grid(row=10, column=index)
+        cb_items.grid(row=curRow, column=index)
 
     # 添加系统级log的按钮,默认勾选
     def addSystemLevelCheckbox(self, index, name, callback):

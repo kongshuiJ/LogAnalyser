@@ -49,14 +49,14 @@
         [ "r'.*(ERROR_AED_PROC_STUCK.*)'",          "导致ER或RR中断的错误(4): %s ",     "Error causing ER or RR interrupt (4): %s " ],
         [ "r'.*(ERROR_BATTERY_CRITICAL_LOW.*)'",    "导致ER或RR中断的错误(5): %s ",     "Error causing ER or RR interrupt (5): %s " ],
 
-        [ "r'.*(receive stop when waiting need remove rr.*)'",  "中断RR功能(1): %s ",        "Interrupt RR function (1): %s " ],
-        [ "r'.*(rr or er flag all set.*)'",                 "清扫前打开ER和RR标志: %s ",     "Open the ER and RR signs before cleaning: %s " ],
-        [ "r'.*(Reclean When AED Or Charge Finish.*)'",     "充满电或4个小时触发RR: %s ",    "Fully charged or 4 hours to trigger RR: %s " ],
+        [ "r'.*(receive stop when waiting need remove rr.*)'",  "中断RR功能(1): %s ",           "Interrupt RR function (1): %s " ],
+        [ "r'.*(rr or er flag all set.*)'",                     "清扫前打开ER和RR标志: %s ",    "Open the ER and RR signs before cleaning: %s " ],
+        [ "r'.*(Reclean When AED Or Charge Finish.*)'",         "充满电或4个小时触发RR: %s ",   "Fully charged or 4 hours to trigger RR: %s " ],
 
-        [ "r'.*(del rr or er flag when it all set.*)'",     "删除ER或者RR标志(1): %s ",      "Delete ER or RR flag (1): %s " ]
+        [ "r'.*(del rr or er flag when it all set.*)'",         "删除ER或者RR标志(1): %s ",     "Delete ER or RR flag (1): %s " ]
     ],
 
-    "PP(CleanState)": [
+    "CleanState(PP)": [
         [ "r'.*(Start path planning)'",     "清洁开始: %s ",    "Cleaning start: %s " ],
         [ "r'.*(Stop path planning!)'",     "清洁停止: %s ",    "Cleaning stop: %s " ],
         [ "r'.*(Pause!)'",                  "清洁暂停: %s ",    "Cleaning pause: %s " ],
@@ -64,10 +64,16 @@
         [ "r'.*(Cleaning success!)'",       "清洁完成: %s ",    "Cleaning success: %s " ],
 
         [ "r'.*(Area size:.*)'",                       "清洁面积与时间: %s ",      "Cleaning area and time: %s " ],
-        [ "r'.*(Cleaning is stopped by external!)'",   "外部停止: %s ",            "external stop: %s " ]
+        [ "r'.*(Cleaning is stopped by external!)'",   "外部停止: %s ",            "external stop: %s " ],
+
+        [ "r'.*(Escape failed.*)'",                 "脱困失败: %s ",                    "escape failed: %s " ],
+        [ "r'.*(No dock signal.*)'",                "没有充电桩: %s ",                  "no dock signal: %s " ],
+        [ "r'.*(Docking failed.*)'",                "找充电桩失败: %s ",                "Finding a dock siganl failed: %s " ],
+        [ "r'.*(Docking success.*)'",               "成功发现信号并交给了下位机: %s ",  "Successfully found the signal and handed it to the lower computer: %s " ],
+        [ "r'.*(relocate timeout go_zones.*)'",     "有go noGO重定位超时: %s ",         "Go noGO relocation timeout: %s " ]
     ],
 
-    "PP(Relocate)": [
+    "Relocate(PP)": [
         [ "r'.*(Relocate success.*)'",   "重定位成功: %s ",    "Relocate success: %s " ],
         [ "r'.*(relocate timeout.*)'",   "重定位失败: %s ",    "Relocation failed: %s " ]
     ],
@@ -80,6 +86,7 @@
         [ "r'.*(loading map.*)'",       "开始加载时输出: %s ",    "Output when loading starts: %s " ],
         [ "r'.*(load map success.*)'",  "加载map成功: %s ",       "load map success: %s " ],
         [ "r'.*(load map failed.*)'",   "加载map失败: %s ",       "load map failed: %s " ],
+
         [ "r'.*(saving persistent map.*)'", "开始保存map: %s ",       "Start saving map: %s " ],
         [ "r'.*(save total.*)'",            "保存map成功: %s ",       "save map success: %s " ],
         [ "r'.*(save map failed.*)'",       "保存map失败: %s ",       "save map failed: %s " ]
