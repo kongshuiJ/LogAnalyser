@@ -20,9 +20,29 @@
     "audio": [
         [ "r'.*(AUDIO_\\S*).*'",    "语言播放: %s", "AUDIO: %s" ]
     ],
+
+    "MAP": [
+        [ "r'.*MAP:(.*)'",    "地图: %s", "MAP: %s" ]
+    ],
  
-    "battery":[
+    "battery": [
         [ "r'.*BAT.:\\s*([0-9][0-9])<==.*'",    "电量显示: %s", "battery: %s" ]
+    ],
+
+    "charge": [
+        [ "r'.*(####Charge####.*)'",    "充电状态: %s", "charge: %s" ]
+    ],
+
+    "AED": [
+        [ "r'.*(#####AED#####.*)'",    "AED状态: %s", "AED: %s" ]
+    ],
+
+    "RTT": [
+        [ "r'.*RTT:(.*)'",    "跑机台: %s", "RTT: %s" ]
+    ],
+
+    "sleep": [
+        [ "r'.*SLEEP:(.*)'",    "休眠: %s", "sleep: %s" ]
     ],
 
     "persist_map": [
@@ -34,26 +54,11 @@
         [ "r'.*ER&RR:\\s*(.*)'",            "ER&RR 信息: %s ",          "ER&RR info: %s " ],
         [ "r'.*(send aed model is.*)'",     "ER和RR的初始状态: %s ",    "Initial state of ER and RR: %s " ],
 
-        [ "r'.*(receive enable rr signal, rr flag:\\s[0-9]).*'",  "RR 信息: %s ",      "RR info: %s " ],
-        [ "r'.*(receive enable er signal, er flag:\\s[0-9]).*'",  "ER 信息: %s ",      "ER info: %s " ],
-
-
-        [ "r'.*(leaving dock when reclean.*)'",     "RR时离开充电桩: %s ",      "Leave the charging pile when RR: %s " ],
-        [ "r'.*(start spin when reclean.*)'",       "RR时离桩旋转: %s ",        "Leave the charging pile to rotate when RR: %s " ],
-        [ "r'.*(spin finish when reclean need soft cal.*)'",       "RR时做扣零偏: %s ",        "RR时做扣零偏: %s " ],
-
-
         [ "r'.*(ERROR_NO_DOCK_SIGNAL.*)'",          "导致ER或RR中断的错误(1): %s ",     "Error causing ER or RR interrupt (1): %s " ],
         [ "r'.*(ERROR_BASE_DOCK_FAILED.*)'",        "导致ER或RR中断的错误(2): %s ",     "Error causing ER or RR interrupt (2): %s " ],
         [ "r'.*(ERROR_PP_ESCAPE_FAILED.*)'",        "导致ER或RR中断的错误(3): %s ",     "Error causing ER or RR interrupt (3): %s " ],
         [ "r'.*(ERROR_AED_PROC_STUCK.*)'",          "导致ER或RR中断的错误(4): %s ",     "Error causing ER or RR interrupt (4): %s " ],
-        [ "r'.*(ERROR_BATTERY_CRITICAL_LOW.*)'",    "导致ER或RR中断的错误(5): %s ",     "Error causing ER or RR interrupt (5): %s " ],
-
-        [ "r'.*(receive stop when waiting need remove rr.*)'",  "中断RR功能(1): %s ",           "Interrupt RR function (1): %s " ],
-        [ "r'.*(rr or er flag all set.*)'",                     "清扫前打开ER和RR标志: %s ",    "Open the ER and RR signs before cleaning: %s " ],
-        [ "r'.*(Reclean When AED Or Charge Finish.*)'",         "充满电或4个小时触发RR: %s ",   "Fully charged or 4 hours to trigger RR: %s " ],
-
-        [ "r'.*(del rr or er flag when it all set.*)'",         "删除ER或者RR标志(1): %s ",     "Delete ER or RR flag (1): %s " ]
+        [ "r'.*(ERROR_BATTERY_CRITICAL_LOW.*)'",    "导致ER或RR中断的错误(5): %s ",     "Error causing ER or RR interrupt (5): %s " ]
     ],
 
     "CleanState(PP)": [
@@ -80,15 +85,5 @@
 
     "SLAMPerformance": [
         [ "r'(.*nNotEnoughKP.*)'",      "SLAM工作效果的评价指标: %s ",    "SLAM work situation: %s " ]
-    ],
-
-    "persistentMap": [
-        [ "r'.*(loading map.*)'",       "开始加载时输出: %s ",    "Output when loading starts: %s " ],
-        [ "r'.*(load map success.*)'",  "加载map成功: %s ",       "load map success: %s " ],
-        [ "r'.*(load map failed.*)'",   "加载map失败: %s ",       "load map failed: %s " ],
-
-        [ "r'.*(saving persistent map.*)'", "开始保存map: %s ",       "Start saving map: %s " ],
-        [ "r'.*(save total.*)'",            "保存map成功: %s ",       "save map success: %s " ],
-        [ "r'.*(save map failed.*)'",       "保存map失败: %s ",       "save map failed: %s " ]
     ]
 }
