@@ -22,7 +22,7 @@ import pmapParser
 
 # yapf: disable
 
-VERSION = "0.1.8"
+VERSION = "0.1.9"
 
 # systemLevelLogDict存放每个系统级log的选中状态 选中 True  未选中 False
 # 如 [D] [I] [E] [M]
@@ -47,6 +47,7 @@ class Win:
 
         self.label_logFilePath          = StringVar()
         self.userLevelLogList           = []
+        self.userLevelCheckbuttonList   = []
         self.list_checkboxes            = None
         self.userLevelLogWin_checkbox   = None
 
@@ -55,6 +56,19 @@ class Win:
         self.logLanguageIndex           = 2    # 1: chinese    2:english 对应json文件
         self.quickViewLogToplevel       = None
         self.systemLevelLogWin_checkbox = None
+
+    # 每次重新打开一个文件就初始化的变量
+    def initData(self):
+        self.logFilePath        = ""
+        self.pmapFilePath       = ""
+        self.logList            = []
+        self.userLevelLogList   = []
+
+        # 复原按钮
+        for button in self.userLevelCheckbuttonList:
+            button.deselect()
+
+        self.label_logFilePath.set("No files are currently open")
         # yapf: enable
 
     def loop(self):
@@ -263,7 +277,9 @@ class Win:
                                width=15,
                                height=1,
                                indicatoron=False)
+        cb_items.deselect()
         cb_items.grid(row=curRow, column=index)
+        self.userLevelCheckbuttonList.append(cb_items)
 
     # 添加系统级log的按钮,默认勾选
     def addSystemLevelCheckbox(self, index, name, callback):
@@ -330,13 +346,7 @@ class Win:
     def _parseFile(self, fileType):
         # 一旦选择新开一个文件，之前的解析的文件内容全部清空
         if 0 < len(self.logFilePath):
-            # yapf: disable
-            self.logFilePath        = ""
-            self.pmapFilePath       = ""
-            self.logList            = []
-            self.userLevelLogList   = []
-            self.label_logFilePath.set("No files are currently open")
-            # yapf: enable
+            self.initData()
 
         filePath = None
         if "log" == fileType:
@@ -379,5 +389,4 @@ if __name__ == '__main__':
     RE_LISTS = logparser.parseItemFile("test.json")
 
     win_ = Win()
-
     win_.loop()
