@@ -3,11 +3,8 @@
 import os
 import sys
 sys.path.append("..")
-sys.path.append("../protobuf_release/py")
+sys.path.append("../protobuf_release")
 
-#from protobuf_release.py import *
-#from PbInput_pb2.py import *
-#from ../protobuf_release/py import PbInput_pb2
 import PbInput_pb2
 import base64
 import binascii

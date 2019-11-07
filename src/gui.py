@@ -2,7 +2,7 @@
 
 import sys
 sys.path.append("..")
-sys.path.append("../protobuf_release/py")
+sys.path.append("../protobuf_release")
 import tkinter as tk
 from tkinter import *
 from tkinter import scrolledtext  # 导入滚动文本框的模块
