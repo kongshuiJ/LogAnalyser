@@ -4,6 +4,8 @@ import os
 import sys
 sys.path.append("..")
 sys.path.append("../protobuf_release")
+sys.path.append("../protobuf_release/py")
+
 
 import PbInput_pb2
 import base64
@@ -172,13 +174,14 @@ def parseItemFile(filePath):
 
 
 if __name__ == '__main__':
-    filePath = "logmain_log_file000.log"
-    re_list = parseItemFile("test.json")
-    #print(re_list)
-    line, size, lists = loadLogFile(filePath)
-    itlist = filter_category(lists)
-    aa = filterll(itlist, RE_LISTS, 1)
-    #printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
+  # filePath = "logmain_log_file000.log"
+  # re_list = parseItemFile("test.json")
+  # #print(re_list)
+  # line, size, lists = loadLogFile(filePath)
+  # itlist = filter_category(lists)
+  # aa = filterll(itlist, RE_LISTS, 1)
+    a = printBuffromB64("gAELygITCgdLaXRjaGVuGggyOUM2OUY3NQ==")
+    print(a)
 
     #print(line,size,len(lists))
     #printBuffromB64("MQ==")

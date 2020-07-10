@@ -1,0 +1,9 @@
+[.]
+checkout = git clone 'ssh://git@192.168.201.254:7999/utils/loganalyser.git' 'LogAnalyser'
+pull = git pull
+
+
+[qfeel_programming_common_utils]
+checkout = git clone 'ssh://git@192.168.201.254:7999/utils/qfeel_programming_common_utils.git' 'qfeel_programming_common_utils'
+rmsrc = rm -rf `pwd`
+pull = git pull
