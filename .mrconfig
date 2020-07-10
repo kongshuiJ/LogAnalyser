@@ -7,3 +7,8 @@ pull = git pull
 checkout = git clone 'ssh://git@192.168.201.254:7999/utils/qfeel_programming_common_utils.git' 'qfeel_programming_common_utils'
 rmsrc = rm -rf `pwd`
 pull = git pull
+
+[protobuf]
+checkout = git clone 'ssh://git@192.168.201.254:7999/cu/src.git' 'protobuf_release'
+rmsrc = rm -rf `pwd`
+pull = git pull
