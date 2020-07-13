@@ -3,8 +3,8 @@
 import os
 import sys
 sys.path.append("..")
-sys.path.append("../protobuf_release")
-sys.path.append("../protobuf_release/py")
+sys.path.append("../protobuf_release/protobuf")
+sys.path.append("../protobuf_release/protobuf/py")
 
 
 import PbInput_pb2

@@ -8,7 +8,7 @@ import re
 import json
 
 sys.path.append(sys.path[0] + "/..")
-sys.path.append(sys.path[0] + "/../protobuf_release/py")
+sys.path.append(sys.path[0] + "/../protobuf_release/protobuf/py")
 
 import PbInput_pb2
 import PbOutput_pb2
